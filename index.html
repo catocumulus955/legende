@@ -5,8 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My First GitHub Website</title>
 </head>
+<style>
+.container {
+  display: grid; /* Enables Grid */
+  place-items: center; /* Centers content both horizontally and vertically */
+  height: 100vh;
+  text-align: center; /* Ensures text inside the container is centered */
+}
+</style>
 <body>
-    <h1>Hello, World!</h1>
+
+<div class="container">
+    <h1>Legendeløpet 2025</h1>
+	<h2>20.	Desember KL 10:00</h2>    
+    <p id="countdown"></p>
     <p>This is my first website hosted on GitHub Pages.</p>
+    <p>This is a second paragraph with more information. You can add as many paragraphs or other elements as you like here.</p>
+    <p>This is yet another paragraph to demonstrate adding more content.</p>
+    <button id="myButton">Go to New Page</button>
+</div>
+
+<script>
+  // JavaScript for the button (existing code)
+  const myButton = document.getElementById('myButton');
+
+  myButton.addEventListener('click', function() {
+    window.open('https://www.example.com', '_self');
+  });
+
+  // JavaScript for the countdown
+  const countdownElement = document.getElementById('countdown');
+
+  // Set the target date and time
+  const targetDate = new Date("December 20, 2025 10:00:00").getTime();
+
+  // Update the countdown every 1 second
+  const countdownInterval = setInterval(function() {
+    // Get today's date and time
+    const now = new Date().getTime();
+
+    // Find the distance between now and the target date
+    const distance = targetDate - now;
+
+    // Time calculations for days, hours, minutes, and seconds
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Display the result in the element with id="countdown"
+    countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+    // If the countdown is finished, write some text
+    if (distance < 0) {
+      clearInterval(countdownInterval);
+      countdownElement.innerHTML = "EXPIRED";
+    }
+  }, 1000);
+</script>
+
 </body>
 </html>
