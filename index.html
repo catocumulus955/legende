@@ -19,6 +19,7 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .banner-inner {
@@ -26,26 +27,52 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      text-align: center;
     }
 
     .banner-left {
+      flex: 1;
       text-align: left;
+      min-width: 200px;
     }
 
-    .banner-left h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    .banner-left p {
-      margin: 0.2rem 0;
-      font-size: 1.1rem;
+    .banner-center {
+      flex: 1;
+      text-align: center;
+      min-width: 200px;
     }
 
     .banner-right {
+      flex: 1;
       display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      text-align: right;
+      gap: 0.5rem;
+      min-width: 200px;
+    }
+
+    .event-date,
+    .event-location {
+      font-size: 1rem;
+      margin: 0.2rem 0;
+      font-weight: 400;
+      color: #444;
+    }
+
+    .banner-center h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      font-weight: 800;
+      color: #222;
+    }
+
+    #timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #333;
     }
 
     .btn {
@@ -65,11 +92,19 @@
     @media (max-width: 600px) {
       .banner-inner {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+      }
+
+      .banner-left,
+      .banner-center,
+      .banner-right {
+        text-align: center;
+        align-items: center;
       }
 
       .banner-right {
-        margin-top: 1rem;
+        align-items: center;
       }
     }
 
@@ -85,27 +120,22 @@
       margin-top: 1rem;
       border-radius: 8px;
     }
-
-    .countdown {
-      text-align: center;
-      padding: 2rem;
-    }
-
-    #timer {
-      font-size: 2rem;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <div class="banner">
     <div class="banner-inner">
       <div class="banner-left">
-        <h1>Legendeløpet 2025</h1>
-        <p>Lørdag 20. Desember</p>
-        <p>Mosvannet 10:00</p>
+        <p class="event-date">Lørdag 20. Desember</p>
+        <p class="event-location">Mosvannet 10:00</p>
       </div>
+
+      <div class="banner-center">
+        <h1>Legendeløpet 2025</h1>
+      </div>
+
       <div class="banner-right">
+        <div id="timer"></div>
         <a href="https://www.eqtiming.no" class="btn">Påmelding</a>
         <a href="results.html" class="btn">Resultater</a>
       </div>
@@ -113,11 +143,6 @@
   </div>
 
   <main>
-    <section class="countdown">
-      <h2>Nedtelling til start</h2>
-      <div id="timer"></div>
-    </section>
-
     <section class="info">
       <h2>Om løpet</h2>
       <p>

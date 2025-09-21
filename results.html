@@ -5,6 +5,7 @@
   <title>Resultater – Legendeløpet</title>
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
   <style>
+  
     body {
       margin: 0;
       font-family: 'Lato', sans-serif;
@@ -48,6 +49,25 @@
     button:hover {
       background-color: #555;
     }
+	
+	.back-button {
+	  text-align: right;
+	  margin: 1rem 2rem;
+	}
+	.back-button .btn {
+	  background-color: #333;
+	  color: white;
+	  padding: 0.6rem 1rem;
+	  text-decoration: none;
+	  border-radius: 5px;
+	  font-size: 1rem;
+	  display: inline-block;
+	  transition: background-color 0.3s ease;
+	}
+
+	.back-button .btn:hover {
+	  background-color: #555;
+	}
 
     table {
       width: 90%;
@@ -64,12 +84,151 @@
     th {
       background-color: #eee;
     }
+	
+	.banner {
+	  background-color: #ffdb58;
+	  padding: 1rem 2rem;
+	  position: sticky;
+	  top: 0;
+	  z-index: 1000;
+	  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.banner-inner {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  flex-wrap: wrap;
+	  text-align: center;
+	}
+
+	.banner-left {
+	  flex: 1;
+	  text-align: left;
+	  min-width: 200px;
+	}
+
+	.banner-center {
+	  flex: 1;
+	  text-align: center;
+	  min-width: 200px;
+	}
+
+	.banner-right {
+	  flex: 1;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: flex-end;
+	  justify-content: center;
+	  text-align: right;
+	  gap: 0.5rem;
+	  min-width: 200px;
+	}
+
+	.event-title {
+	  font-size: 1.2rem;
+	  font-weight: 600;
+	  margin: 0 0 0.2rem 0;
+	  color: #222;
+	}
+
+	.event-date,
+	.event-location {
+	  font-size: 1rem;
+	  margin: 0.2rem 0;
+	  font-weight: 400;
+	  color: #444;
+	}
+
+	.banner-center h1 {
+	  font-size: 2.5rem;
+	  margin: 0;
+	  font-weight: 800;
+	  color: #222;
+	}
+
+	#timer {
+	  font-size: 1.2rem;
+	  font-weight: bold;
+	  margin-bottom: 0.5rem;
+	  color: #333;
+	}
+
+	.btn {
+	  background-color: #333;
+	  color: white;
+	  padding: 0.6rem 1rem;
+	  text-decoration: none;
+	  border-radius: 5px;
+	  font-size: 1rem;
+	  transition: background-color 0.3s ease;
+	}
+
+	.btn:hover {
+	  background-color: #555;
+	}
+
+	@media (max-width: 600px) {
+	  .banner-inner {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	  }
+
+	  .banner-left,
+	  .banner-center,
+	  .banner-right {
+		text-align: center;
+		align-items: center;
+	  }
+
+	  .banner-right {
+		align-items: center;
+	  }
+	}
   </style>
 </head>
+	<script>
+	  function countdown() {
+		const targetDate = new Date("2025-12-20T10:00:00");
+		const now = new Date();
+		const diff = targetDate - now;
+
+		if (diff <= 0) {
+		  document.getElementById("timer").innerText = "Løpet har startet!";
+		  return;
+		}
+
+		const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+		const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+		const minutes = Math.floor((diff / (1000 * 60)) % 60);
+		const seconds = Math.floor((diff / 1000) % 60);
+
+		document.getElementById("timer").innerText =
+		  `${days} dager ${hours}t ${minutes}m ${seconds}s`;
+	  }
+
+	  setInterval(countdown, 1000);
+	</script>
 <body>
   <div class="banner">
-    <h1>Resultater</h1>
-  </div>
+	  <div class="banner-inner">
+		<div class="banner-left">
+		  <p class="event-title">Legendeløpet 2025</p>
+		  <p class="event-date">Lørdag 20. Desember</p>
+		  <p class="event-location">Mosvannet 10:00</p>
+		</div>
+
+		<div class="banner-center">
+		  <h1>Resultater</h1>
+		</div>
+
+		<div class="banner-right">
+		  <div id="timer"></div>
+		  <a href="index.html" class="btn">← Tilbake til forsiden</a>
+		</div>
+	  </div>
+	</div>
 
   <main>
     <div class="buttons">
@@ -118,71 +277,77 @@
 
   // 3. Main Display Function
   function showTab(year, data) {
-    const container = document.getElementById("results");
-    container.innerHTML = "";
+	  const container = document.getElementById("results");
+	  container.innerHTML = "";
 
-    let filtered = data;
-    if (year !== "all") {
-      filtered = data.filter(r => r.year === year);
-    }
+	  let filtered = data;
+	  if (year !== "all") {
+		const yearNum = parseInt(year); // ✅ Convert to number
+		filtered = data.filter(r => r.year === yearNum);
+	  }
 
-    if (year === "all") {
-      filtered = [...data]
-        .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
-        .map((r, i) => ({
-          ...r,
-          allRank: i + 1,
-          pace: calculatePace(r.time_display)
-        }));
-	} else {
-  filtered = [...filtered]
-    .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
-    .map((r, i) => ({
-      ...r,
-      pace: calculatePace(r.time_display),
-      rank: i + 1
-    }));
+	  if (filtered.length === 0) {
+		container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>"; // ✅ Fallback message
+		return;
+	  }
+
+	  if (year === "all") {
+		filtered = [...data]
+		  .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+		  .map((r, i) => ({
+			...r,
+			allRank: i + 1,
+			pace: calculatePace(r.time_display)
+		  }));
+	  } else {
+		filtered = [...filtered]
+		  .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+		  .map((r, i) => ({
+			...r,
+			pace: calculatePace(r.time_display),
+			rank: i + 1
+		  }));
+	  }
+
+	  const headers = year === "all"
+		? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
+		: ["Plassering", "Navn", "Tid", "Fart"];
+
+	  const table = document.createElement("table");
+	  const thead = document.createElement("thead");
+	  const tbody = document.createElement("tbody");
+
+	  const headerRow = document.createElement("tr");
+	  headers.forEach(h => {
+		const th = document.createElement("th");
+		th.innerText = h;
+		headerRow.appendChild(th);
+	  });
+	  thead.appendChild(headerRow);
+
+	  filtered.forEach(r => {
+		const row = document.createElement("tr");
+		const cells = year === "all"
+		  ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
+		  : [r.rank, r.name, r.time_display, r.pace];
+
+		cells.forEach((c, i) => {
+		  const td = document.createElement("td");
+		  if (headers[i] === "Navn" && r.athlete_id) {
+			td.innerHTML = `<a href="#" onclick="showAthlete('${r.athlete_id}')">${c}</a>`;
+		  } else {
+			td.innerText = c;
+		  }
+		  row.appendChild(td);
+		});
+
+		tbody.appendChild(row);
+	  });
+
+	  table.appendChild(thead);
+	  table.appendChild(tbody);
+	  container.appendChild(table);
 	}
-    
-    const headers = year === "all"
-      ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
-      : ["Plassering", "Navn", "Tid", "Fart"];
-
-    const table = document.createElement("table");
-    const thead = document.createElement("thead");
-    const tbody = document.createElement("tbody");
-
-    const headerRow = document.createElement("tr");
-    headers.forEach(h => {
-      const th = document.createElement("th");
-      th.innerText = h;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-
-    filtered.forEach(r => {
-      const row = document.createElement("tr");
-      const cells = year === "all"
-        ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
-        : [r.rank, r.name, r.time_display, r.pace];
-
-      cells.forEach((c, i) => {
-        const td = document.createElement("td");
-        if (headers[i] === "Navn" && r.athlete_id) {
-          td.innerHTML = `<a href="#" onclick="showAthlete('${r.athlete_id}')">${c}</a>`;
-        } else {
-          td.innerText = c;
-        }
-        row.appendChild(td);
-      });
-
-      tbody.appendChild(row);
-    });
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    container.appendChild(table);
-  }
 
   // 4. Fetch Data from Firestore
   let allResults = [];
