@@ -46,10 +46,15 @@
             border-radius: 5px;
             transition: background-color 0.3s;
             cursor: pointer;
+            margin: 5px;
         }
 
         .btn:hover {
             background-color: #2980b9;
+        }
+        
+        .btn-active {
+            background-color: #2c3e50;
         }
 
         /* Section and Loader Styles */
@@ -111,6 +116,10 @@
             background-color: #ecf0f1;
             font-size: 1.5em;
             font-weight: bold;
+        }
+        
+        #year-buttons {
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -198,18 +207,18 @@
     const auth = getAuth(app);
 
     let userId = 'anonymous'; // Default ID
-    let currentYear = '2022'; // Default year to display
+    let currentYear = ''; // Initialize without a specific year
 
     // Sign in anonymously to enable database access
     signInAnonymously(auth).then(async (userCredential) => {
         userId = userCredential.user.uid;
         console.log("Signed in anonymously. User ID:", userId);
-
+        
         // Seed the database with sample data if it's empty
         await seedDatabase();
 
-        // Start listening for real-time updates after successful sign-in
-        startRealtimeListener();
+        // Get the available years and set up the UI
+        await getAvailableYears();
         
     }).catch((error) => {
         console.error("Anonymous sign-in failed:", error);
@@ -242,7 +251,12 @@
                 { rank: 5, name: "Silje Kristoffersen", time_display: "00:43:10", pace: "04:19", year: "2022", time_in_seconds: 2590 },
                 { rank: 6, name: "Magnus Gundersen", time_display: "00:44:05", pace: "04:24", year: "2022", time_in_seconds: 2645 },
                 { rank: 7, name: "Maria Pedersen", time_display: "00:38:20", pace: "03:50", year: "2023", time_in_seconds: 2300 },
-                { rank: 1, name: "Lars Olsen", time_display: "00:39:15", pace: "03:55", year: "2023", time_in_seconds: 2355 }
+                { rank: 1, name: "Lars Olsen", time_display: "00:39:15", pace: "03:55", year: "2023", time_in_seconds: 2355 },
+                { rank: 1, name: "Silje Kristoffersen", time_display: "00:43:10", pace: "04:19", year: "2024", time_in_seconds: 2590 },
+                // New sample data for 2025
+                { rank: 1, name: "Jonas Hansen", time_display: "00:37:50", pace: "03:47", year: "2025", time_in_seconds: 2270 },
+                { rank: 2, name: "Maria Pedersen", time_display: "00:38:35", pace: "03:52", year: "2025", time_in_seconds: 2315 },
+                { rank: 3, name: "Magnus Gundersen", time_display: "00:40:10", pace: "04:01", year: "2025", time_in_seconds: 2410 }
             ];
 
             for (const data of sampleData) {
@@ -251,13 +265,53 @@
             console.log("Database seeded successfully.");
         }
     }
-
+    
+    async function getAvailableYears() {
+        const resultsRef = collection(db, `artifacts/${appId}/public/data/results`);
+        const q = query(resultsRef, orderBy("year", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        const years = new Set();
+        querySnapshot.forEach(doc => {
+            years.add(doc.data().year);
+        });
+        
+        const sortedYears = Array.from(years).sort().reverse();
+        const yearButtonsContainer = document.getElementById('year-buttons');
+        yearButtonsContainer.innerHTML = '';
+        
+        if (sortedYears.length > 0) {
+            currentYear = sortedYears[0];
+            sortedYears.forEach(year => {
+                const button = document.createElement('button');
+                button.textContent = year;
+                button.className = `btn ${year === currentYear ? 'btn-active' : ''}`;
+                button.onclick = () => {
+                    currentYear = year;
+                    startRealtimeListener();
+                };
+                yearButtonsContainer.appendChild(button);
+            });
+        }
+        
+        startRealtimeListener();
+    }
+    
     // Function to set up the real-time listener for race results
     function startRealtimeListener() {
         const tableBody = document.querySelector('#results-table tbody');
         const loader = document.getElementById('loader');
         const currentYearSpan = document.getElementById('current-year');
         currentYearSpan.textContent = currentYear;
+        
+        // Update button styles
+        document.querySelectorAll('#year-buttons .btn').forEach(btn => {
+            if (btn.textContent === currentYear) {
+                btn.classList.add('btn-active');
+            } else {
+                btn.classList.remove('btn-active');
+            }
+        });
 
         // Create a query to get all results for the current year, ordered by time
         const q = query(
