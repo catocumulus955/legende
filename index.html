@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Annual Race</title>
+    <title>Legendeløpet 2025</title>
     
     <style>
-        /* Base styles for a clean, minimalist design */
+        /* General Body and Container Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: Lato, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f8f8;
             color: #333;
         }
 
-        /* Container to center content and control width */
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -23,18 +22,17 @@
             text-align: center;
         }
 
-        /* Styles for main headings */
+        /* Heading and Paragraph Styles */
         h1 {
             font-size: 3em;
             color: #2c3e50;
         }
 
-        /* Styles for paragraphs */
         p {
             line-height: 1.6;
         }
 
-        /* Styles for buttons and links */
+        /* Button and Link Styles */
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -49,14 +47,14 @@
             background-color: #2980b9;
         }
 
-        /* Styles for new sections */
+        /* Section Styles */
         .section {
             margin-top: 3rem;
             border-top: 1px solid #ddd;
             padding-top: 3rem;
         }
 
-        /* Styles for the results table */
+        /* Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -73,78 +71,40 @@
             background-color: #f2f2f2;
             font-weight: bold;
         }
-    </style>
-
-    <script>
-        // Function to fetch and display the CSV data for race results
-        async function loadRaceResults() {
-            // Get the tbody element of the table to insert rows into
-            const tableBody = document.querySelector('#results-table tbody');
-            
-            try {
-                // Fetch the results.csv file from the same directory as the HTML file
-                const response = await fetch('results.csv');
-                
-                // If the file can't be fetched, throw an error
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.text();
-                
-                // Split the data into individual rows based on a newline, skipping the first row (header)
-                const rows = data.split('\n').slice(1);
-                
-                // Loop through each row of the CSV data
-                rows.forEach(row => {
-                    // Split the row into columns based on the comma separator
-                    const [rank, name, time, pace] = row.split(',');
-                    
-                    // Create a new table row element
-                    const newRow = document.createElement('tr');
-                    
-                    // Populate the new row with data from the CSV
-                    newRow.innerHTML = `
-                        <td>${rank}</td>
-                        <td>${name}</td>
-                        <td>${time}</td>
-                        <td>${pace}</td>
-                    `;
-                    
-                    // Add the newly created row to the table body
-                    tableBody.appendChild(newRow);
-                });
-            } catch (error) {
-                // Log any errors that occur during the fetch process
-                console.error('Error fetching the race results:', error);
-                
-                // Display a user-friendly error message in the table
-                tableBody.innerHTML = '<tr><td colspan="4">Could not load results. Please try again later.</td></tr>';
-            }
-        }
         
-        // This event listener ensures the script runs after the page has finished loading
-        window.onload = loadRaceResults;
-    </script>
+        /* Specific element styles */
+        #important-text {
+            font-size: 2em;
+        }
+
+        #countdown {
+            border: 2px solid #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>The Annual City Race</h1>
-        <p>Join us for the most anticipated race of the year!</p>
-        <a href="#about" class="btn">Learn More</a>
+        <h1>Legendeløpet 2025</h1>
+        <p id="important-text">Lørdag 20.Desember.</p>
+        <p id="countdown"></p>
     </header>
 
     <main>
         <section id="results" class="section">
-            <h2>Race Results: 2025</h2>
+            <h2>Resultater 2022</h2>
             <table id="results-table">
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Time</th>
+                        <th>Plassering</th>
+                        <th>Navn</th>
+                        <th>Tid</th>
                         <th>Pace (min/km)</th>
                     </tr>
                 </thead>
@@ -153,17 +113,74 @@
             </table>
         </section>
 
-        <section id="about" class="section">
-            <h2>About the Race</h2>
-            <p>Our annual race is a celebrated community event, bringing together runners of all ages and skill levels. Whether you're a seasoned marathoner or a first-timer, this course offers a challenge and a scenic view of the city.</p>
-        </section>
-
-        <section id="race-info" class="section">
-            <h2>Race Information</h2>
-            <p>Details about the race date, time, and location will be posted here soon.</p>
-        </section>
-    </main>
+        </main>
 </div>
+
+<script>
+    // Function to fetch and display the CSV data for race results
+    async function loadRaceResults() {
+        const tableBody = document.querySelector('#results-table tbody');
+        
+        try {
+            const response = await fetch('2022results.csv');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.text();
+            
+            // Split the data into rows, and slice(1) to remove the header
+            const rows = data.split('\n').slice(1);
+            
+            rows.forEach(row => {
+                // Ensure the row has the correct number of columns (4)
+                const columns = row.split(',');
+                if (columns.length === 4) {
+                    const [rank, name, time, pace] = columns;
+                    
+                    const newRow = document.createElement('tr');
+                    
+                    newRow.innerHTML = `
+                        <td>${rank}</td>
+                        <td>${name}</td>
+                        <td>${time}</td>
+                        <td>${pace}</td>
+                    `;
+                    
+                    tableBody.appendChild(newRow);
+                }
+            });
+        } catch (error) {
+            console.error('Error fetching the race results:', error);
+            tableBody.innerHTML = '<tr><td colspan="4">Klarte ikke å laste resultater. Vennligst prøv igjen senere.</td></tr>';
+        }
+    }
+    
+    // Call the function when the page loads
+    window.onload = loadRaceResults;
+
+    // JavaScript for the countdown to the race
+    const countdownElement = document.getElementById('countdown');
+    const targetDate = new Date("December 20, 2025 10:00:00").getTime();
+
+    const countdownInterval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            countdownElement.innerHTML = "Løpet har startet!";
+        }
+    }, 1000);
+</script>
 
 </body>
 </html>
