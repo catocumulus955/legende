@@ -282,26 +282,29 @@
 	  const container = document.getElementById("results");
 	  container.innerHTML = "";
 
-	  let filtered = data;
+	  let filtered;
 
 	  if (year === "all") {
-	  filtered = [...data].sort((a, b) => a.allRank - b.allRank);
-	}
-
-	  if (filtered.length === 0) {
-		container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
-		return;
-	  }
-
-	  // For year-specific view, assign rank and pace
-	  if (year !== "all") {
-		filtered = [...filtered]
+		// ✅ Show all results, sorted by allRank
+		filtered = [...data]
+		  .filter(r => typeof r.allRank === "number")
+		  .sort((a, b) => a.allRank - b.allRank);
+	  } else {
+		// ✅ Filter by year and assign rank + pace
+		const yearNum = parseInt(year);
+		filtered = data
+		  .filter(r => r.year === yearNum)
 		  .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
 		  .map((r, i) => ({
 			...r,
 			pace: calculatePace(r.time_display),
 			rank: i + 1
 		  }));
+	  }
+
+	  if (filtered.length === 0) {
+		container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
+		return;
 	  }
 
 	  const headers = year === "all"
