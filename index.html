@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legendeløpet 2025</title>
+    <title>Legendeløpet Database</title>
     
+    <!-- Link to Google Fonts for Lato -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
+    
+    <!-- CSS Styles -->
     <style>
         /* General Body and Container Styles */
         body {
-            font-family: Lato, sans-serif;
+            font-family: 'Lato', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f8f8;
@@ -41,17 +45,34 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
+            cursor: pointer;
         }
 
         .btn:hover {
             background-color: #2980b9;
         }
 
-        /* Section Styles */
+        /* Section and Loader Styles */
         .section {
             margin-top: 3rem;
             border-top: 1px solid #ddd;
             padding-top: 3rem;
+        }
+        
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Table Styles */
@@ -70,6 +91,12 @@
         th {
             background-color: #f2f2f2;
             font-weight: bold;
+        }
+        
+        .clickable-name {
+            color: #3498db;
+            text-decoration: underline;
+            cursor: pointer;
         }
         
         /* Specific element styles */
@@ -94,11 +121,17 @@
         <h1>Legendeløpet 2025</h1>
         <p id="important-text">Lørdag 20.Desember.</p>
         <p id="countdown"></p>
+        <a href="javascript:void(0)" onclick="showRaceResults()" class="btn">Se Resultater</a>
     </header>
 
     <main>
-        <section id="results" class="section">
-            <h2>Resultater 2022</h2>
+        <!-- Race Results View -->
+        <section id="results-view" class="section">
+            <div id="year-buttons">
+                <!-- Year buttons will be populated here -->
+            </div>
+            <h2>Resultater for <span id="current-year"></span></h2>
+            <div class="loader" id="loader"></div>
             <table id="results-table">
                 <thead>
                     <tr>
@@ -109,71 +142,261 @@
                     </tr>
                 </thead>
                 <tbody>
-                    </tbody>
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
             </table>
         </section>
 
-        </main>
+        <!-- Athlete Profile View (hidden by default) -->
+        <section id="athlete-profile-view" class="section" style="display: none;">
+            <button onclick="showRaceResults()" class="btn">Tilbake til resultater</button>
+            <h2 id="athlete-name"></h2>
+            <p>Beste tid: <span id="best-time"></span></p>
+            <p>Beste plassering: <span id="best-rank"></span></p>
+
+            <h3>Alle resultater</h3>
+            <table id="athlete-results-table">
+                <thead>
+                    <tr>
+                        <th>År</th>
+                        <th>Plassering</th>
+                        <th>Tid</th>
+                        <th>Pace (min/km)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Other sections -->
+        <section id="about" class="section">
+            <h2>Om Legendeløpet</h2>
+            <p>Legendeløpet er et løp for alle. Løpet finner sted den 20. Desember. Det er et løp for hele familien. Løypen består av en 10 km lang løype som er for de aller fleste. Hovedmålet er at alle skal ha en fin dag og ha det gøy. Vi ser frem til å se deg på startstreken!</p>
+        </section>
+    </main>
 </div>
 
-<script>
-    // Function to fetch and display the CSV data for race results
-    async function loadRaceResults() {
-        const tableBody = document.querySelector('#results-table tbody');
-        
-        try {
-            const response = await fetch('2022results.csv');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+<!-- Firebase SDKs -->
+<script type="module">
+    // Import required Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, where, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            const data = await response.text();
-            
-            // Split the data into rows, and slice(1) to remove the header
-            const rows = data.split('\n').slice(1);
-            
-            rows.forEach(row => {
-                // Ensure the row has the correct number of columns (4)
-                const columns = row.split(',');
-                if (columns.length === 4) {
-                    const [rank, name, time, pace] = columns;
-                    
+    setLogLevel('debug');
+
+    // --- Firebase Setup ---
+    // DO NOT change these variables. They are provided by the canvas environment.
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let userId = 'anonymous'; // Default ID
+    let currentYear = '2022'; // Default year to display
+
+    // Sign in anonymously to enable database access
+    signInAnonymously(auth).then(async (userCredential) => {
+        userId = userCredential.user.uid;
+        console.log("Signed in anonymously. User ID:", userId);
+
+        // Seed the database with sample data if it's empty
+        await seedDatabase();
+
+        // Start listening for real-time updates after successful sign-in
+        startRealtimeListener();
+        
+    }).catch((error) => {
+        console.error("Anonymous sign-in failed:", error);
+    });
+
+    // --- Data Model in Firestore ---
+    // Collection: /artifacts/{appId}/public/data/results
+    // Each document is a single result with the following fields:
+    // {
+    //   "year": "2022",
+    //   "rank": 1,
+    //   "name": "Jane Doe",
+    //   "time_in_seconds": 2732, // for easy sorting
+    //   "time_display": "00:45:32",
+    //   "pace": "04:33"
+    // }
+
+    // Function to populate the database with sample data if the collection is empty
+    async function seedDatabase() {
+        const resultsRef = collection(db, `artifacts/${appId}/public/data/results`);
+        const querySnapshot = await getDocs(query(resultsRef));
+
+        if (querySnapshot.empty) {
+            console.log("Database is empty, seeding with sample data.");
+            const sampleData = [
+                { rank: 1, name: "Maria Pedersen", time_display: "00:38:20", pace: "03:50", year: "2022", time_in_seconds: 2300 },
+                { rank: 2, name: "Lars Olsen", time_display: "00:39:15", pace: "03:55", year: "2022", time_in_seconds: 2355 },
+                { rank: 3, name: "Camilla Jensen", time_display: "00:40:02", pace: "04:00", year: "2022", time_in_seconds: 2402 },
+                { rank: 4, name: "Jonas Hansen", time_display: "00:41:40", pace: "04:10", year: "2022", time_in_seconds: 2500 },
+                { rank: 5, name: "Silje Kristoffersen", time_display: "00:43:10", pace: "04:19", year: "2022", time_in_seconds: 2590 },
+                { rank: 6, name: "Magnus Gundersen", time_display: "00:44:05", pace: "04:24", year: "2022", time_in_seconds: 2645 },
+                { rank: 7, name: "Maria Pedersen", time_display: "00:38:20", pace: "03:50", year: "2023", time_in_seconds: 2300 },
+                { rank: 1, name: "Lars Olsen", time_display: "00:39:15", pace: "03:55", year: "2023", time_in_seconds: 2355 }
+            ];
+
+            for (const data of sampleData) {
+                await setDoc(doc(resultsRef), data);
+            }
+            console.log("Database seeded successfully.");
+        }
+    }
+
+    // Function to set up the real-time listener for race results
+    function startRealtimeListener() {
+        const tableBody = document.querySelector('#results-table tbody');
+        const loader = document.getElementById('loader');
+        const currentYearSpan = document.getElementById('current-year');
+        currentYearSpan.textContent = currentYear;
+
+        // Create a query to get all results for the current year, ordered by time
+        const q = query(
+            collection(db, `artifacts/${appId}/public/data/results`),
+            where("year", "==", currentYear),
+            orderBy("time_in_seconds", "asc")
+        );
+
+        // Attach the real-time listener
+        onSnapshot(q, (querySnapshot) => {
+            console.log("Real-time update received!");
+            tableBody.innerHTML = ''; // Clear existing table rows
+            loader.style.display = 'block'; // Show loader
+
+            if (querySnapshot.empty) {
+                tableBody.innerHTML = '<tr><td colspan="4">Ingen resultater funnet for dette året.</td></tr>';
+            } else {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
                     const newRow = document.createElement('tr');
                     
                     newRow.innerHTML = `
-                        <td>${rank}</td>
-                        <td>${name}</td>
-                        <td>${time}</td>
-                        <td>${pace}</td>
+                        <td>${data.rank}</td>
+                        <td class="clickable-name" onclick="loadAthleteProfile('${data.name}')">${data.name}</td>
+                        <td>${data.time_display}</td>
+                        <td>${data.pace}</td>
                     `;
-                    
                     tableBody.appendChild(newRow);
-                }
-            });
-        } catch (error) {
-            console.error('Error fetching the race results:', error);
+                });
+            }
+            loader.style.display = 'none'; // Hide loader
+        }, (error) => {
+            console.error("Error fetching documents: ", error);
             tableBody.innerHTML = '<tr><td colspan="4">Klarte ikke å laste resultater. Vennligst prøv igjen senere.</td></tr>';
+            loader.style.display = 'none';
+        });
+    }
+
+    // --- Functions for Displaying Content ---
+    window.showRaceResults = function() {
+        document.getElementById('results-view').style.display = 'block';
+        document.getElementById('athlete-profile-view').style.display = 'none';
+    }
+
+    window.showAthleteProfile = function() {
+        document.getElementById('results-view').style.display = 'none';
+        document.getElementById('athlete-profile-view').style.display = 'block';
+    }
+
+    window.timeToSeconds = function(timeStr) {
+        const parts = timeStr.split(':').map(Number);
+        if (parts.length === 3) {
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else if (parts.length === 2) {
+            return parts[0] * 60 + parts[1];
         }
+        return 0;
+    }
+
+    window.secondsToTime = function(totalSeconds) {
+        if (isNaN(totalSeconds) || totalSeconds === Infinity) {
+            return 'N/A';
+        }
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = Math.floor(totalSeconds % 60);
+
+        const pad = (num) => num.toString().padStart(2, '0');
+
+        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
     
-    // Call the function when the page loads
-    window.onload = loadRaceResults;
+    window.loadAthleteProfile = async function(name) {
+        showAthleteProfile();
+        
+        const athleteNameElem = document.getElementById('athlete-name');
+        const bestTimeElem = document.getElementById('best-time');
+        const bestRankElem = document.getElementById('best-rank');
+        const athleteTableBody = document.querySelector('#athlete-results-table tbody');
+        
+        athleteNameElem.textContent = name;
+        athleteTableBody.innerHTML = '';
+        bestTimeElem.textContent = 'Laster...';
+        bestRankElem.textContent = 'Laster...';
 
-    // JavaScript for the countdown to the race
+        try {
+            const resultsRef = collection(db, `artifacts/${appId}/public/data/results`);
+            const q = query(resultsRef, where("name", "==", name), orderBy("year", "asc"));
+            const querySnapshot = await getDocs(q);
+
+            let allResults = [];
+            let bestTime = Infinity;
+            let bestRank = Infinity;
+            
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                allResults.push(data);
+                
+                if (data.time_in_seconds < bestTime) {
+                    bestTime = data.time_in_seconds;
+                }
+                if (data.rank < bestRank) {
+                    bestRank = data.rank;
+                }
+            });
+
+            allResults.forEach(result => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${result.year}</td>
+                    <td>${result.rank}</td>
+                    <td>${result.time_display}</td>
+                    <td>${result.pace}</td>
+                `;
+                athleteTableBody.appendChild(newRow);
+            });
+
+            bestTimeElem.textContent = secondsToTime(bestTime);
+            bestRankElem.textContent = bestRank;
+
+        } catch (error) {
+            console.error("Error fetching athlete profile: ", error);
+            athleteTableBody.innerHTML = '<tr><td colspan="4">Klarte ikke å laste data for denne utøveren.</td></tr>';
+        }
+    }
+
+    // --- Countdown Logic ---
     const countdownElement = document.getElementById('countdown');
     const targetDate = new Date("December 20, 2025 10:00:00").getTime();
 
     const countdownInterval = setInterval(function() {
         const now = new Date().getTime();
         const distance = targetDate - now;
-
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
         if (distance < 0) {
             clearInterval(countdownInterval);
