@@ -12,7 +12,11 @@
       background: #f9f9f9;
       color: #333;
     }
-
+	
+	main {
+	margin-top: 2rem;
+	}
+	
     .banner {
       background-color: #ffdb58;
       padding: 1rem 2rem;
@@ -120,39 +124,49 @@
       margin-top: 1rem;
       border-radius: 8px;
     }
+	.container {
+	  max-width: 1000px;
+	  margin: 0 auto;
+	  padding: 0 1rem;
+	}
+	
   </style>
 </head>
 <body>
   <div class="banner">
-    <div class="banner-inner">
-      <div class="banner-left">
-        <p class="event-date">Lørdag 20. Desember</p>
-        <p class="event-location">Mosvannet 10:00</p>
-      </div>
+	  <div class="container">
+		<div class="banner-inner">
 
-      <div class="banner-center">
-        <h1>Legendeløpet 2025</h1>
-      </div>
+		  <div class="banner-left">
+			<p class="event-date">Lørdag 20. Desember</p>
+			<p class="event-location">Mosvannet 10:00</p>
+		  </div>
 
-      <div class="banner-right">
-        <div id="timer"></div>
-        <a href="https://www.eqtiming.no" class="btn">Påmelding</a>
-        <a href="results.html" class="btn">Resultater</a>
-      </div>
+		  <div class="banner-center">
+			<h1>Legendeløpet 2025</h1>
+		  </div>
+
+		  <div class="banner-right">
+			<div id="timer"></div>
+			<a href="https://www.eqtiming.no" class="btn">Påmelding</a>
+			<a href="results.html" class="btn">Resultater</a>
+		  </div>
+		</div>
     </div>
   </div>
-
-  <main>
-    <section class="info">
-      <h2>Om løpet</h2>
-      <p>
-        Legendeløpet blir arrangert "offisielt" for fjerde år på rad.<br>
-        Én runde rundt Mosvannet (3041 meter), mot klokken, start fra kapellet.<br>
-        Status per 21. september er at vi venter på godkjenning fra kommunen da Mosvannet er blitt et fredet naturreservat.
-      </p>
-      <img src="last_year.jpg" alt="Legendeløpet 2024" />
-    </section>
+<div class="container">
+	<main>
+		<section class="info">
+		  <h2>Om løpet</h2>
+		  <p>
+			Legendeløpet blir arrangert "offisielt" for fjerde år på rad.<br>
+			Én runde rundt Mosvannet (3041 meter), mot klokken, start fra kapellet.<br>
+			Status per 21. september er at vi venter på godkjenning fra kommunen da Mosvannet er blitt et fredet naturreservat.
+		  </p>
+		  <img src="last_year.jpg" alt="Legendeløpet 2024" />
+		</section>
   </main>
+</div> 
 
   <script>
     function countdown() {
