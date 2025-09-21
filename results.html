@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resultater – Legendeløpet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    .banner {
+      background-color: #ffdb58;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .banner h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: #333;
+      color: white;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    table {
+      width: 90%;
+      margin: 2rem auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <h1>Resultater</h1>
+  </div>
+
+  <main>
+    <div class="buttons">
+      <button data-year="all">Alle tider</button>
+      <button data-year="2022">2022</button>
+      <button data-year="2023">2023</button>
+      <button data-year="2024">2024</button>
+    </div>
+
+    <div id="results"></div>
+  </main>
+
+ 
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // 1. Firebase Configuration and Initialization
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfaUa6FEEj55L8YqdKTe5YE3mMLHqDBW4",
+    authDomain: "legendelopet-resultat.firebaseapp.com",
+    projectId: "legendelopet-resultat",
+    storageBucket: "legendelopet-resultat.firebasestorage.app",
+    messagingSenderId: "982148824748",
+    appId: "1:982148824748:web:878a9fb9d58f93d564a909"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 2. Utility Functions
+  function calculatePace(time) {
+    const [min, sec] = time.split(":").map(Number);
+    const totalSec = min * 60 + sec;
+    const pace = totalSec / 3;
+    const paceMin = Math.floor(pace / 60);
+    const paceSec = Math.round(pace % 60);
+    return `${paceMin}:${paceSec.toString().padStart(2, '0')}`;
+  }
+
+  function timeToSeconds(time) {
+    const [min, sec] = time.split(":").map(Number);
+    return min * 60 + sec;
+  }
+
+  // 3. Main Display Function
+  function showTab(year, data) {
+    const container = document.getElementById("results");
+    container.innerHTML = "";
+
+    let filtered = data;
+    if (year !== "all") {
+      filtered = data.filter(r => r.year === year);
+    }
+
+    if (year === "all") {
+      filtered = [...data]
+        .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+        .map((r, i) => ({
+          ...r,
+          allRank: i + 1,
+          pace: calculatePace(r.time_display)
+        }));
+	} else {
+  filtered = [...filtered]
+    .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+    .map((r, i) => ({
+      ...r,
+      pace: calculatePace(r.time_display),
+      rank: i + 1
+    }));
+	}
+    
+    const headers = year === "all"
+      ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
+      : ["Plassering", "Navn", "Tid", "Fart"];
+
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const tbody = document.createElement("tbody");
+
+    const headerRow = document.createElement("tr");
+    headers.forEach(h => {
+      const th = document.createElement("th");
+      th.innerText = h;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    filtered.forEach(r => {
+      const row = document.createElement("tr");
+      const cells = year === "all"
+        ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
+        : [r.rank, r.name, r.time_display, r.pace];
+
+      cells.forEach((c, i) => {
+        const td = document.createElement("td");
+        if (headers[i] === "Navn" && r.athlete_id) {
+          td.innerHTML = `<a href="#" onclick="showAthlete('${r.athlete_id}')">${c}</a>`;
+        } else {
+          td.innerText = c;
+        }
+        row.appendChild(td);
+      });
+
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
+
+  // 4. Fetch Data from Firestore
+  let allResults = [];
+
+  db.collection("results").get().then(snapshot => {
+    snapshot.forEach(doc => {
+      allResults.push(doc.data());
+    });
+    showTab("all", allResults);
+  });
+
+  // 5. Wire Up Buttons
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const year = btn.getAttribute("data-year");
+      showTab(year, allResults);
+    });
+  });
+
+  // 6. Optional: Athlete Detail View
+  function showAthlete(id) {
+    const athleteResults = allResults.filter(r => r.athlete_id === id);
+    showTab("all", athleteResults); // or create a custom view
+  }
+</script>
+...
+<div id="results"></div>
+</main>
+
+<!-- Firebase SDKs and Script -->
+<script src="..."></script>
+<script>
+  // All the code above
+</script>
+</body>
+</html>
