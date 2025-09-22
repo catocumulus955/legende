@@ -1,393 +1,573 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8" />
-  <title>Resultater – Legendeløpet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
-  <style>
-  
-    body {
-      margin: 0;
-      font-family: 'Lato', sans-serif;
-      background: #f9f9f9;
-      color: #333;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultater – Legendeløpet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+    <!-- Adding Tailwind CSS for modern, responsive styling of the chart container -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Adding Chart.js library for creating charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Lato', sans-serif;
+            background: #f9f9f9;
+            color: #333;
+        }
 
-    .banner {
-      background-color: #ffdb58;
-      padding: 1rem 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      text-align: center;
-    }
+        .banner {
+            background-color: #ffdb58;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .banner h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
+        .banner-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            text-align: center;
+        }
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
-    }
+        .banner-left {
+            flex: 1;
+            text-align: left;
+            min-width: 200px;
+        }
 
-    button {
-      background-color: #333;
-      color: white;
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+        .banner-center {
+            flex: 1;
+            text-align: center;
+            min-width: 200px;
+        }
 
-    button:hover {
-      background-color: #555;
-    }
-	
-	.back-button {
-	  text-align: right;
-	  margin: 1rem 2rem;
-	}
-	.back-button .btn {
-	  background-color: #333;
-	  color: white;
-	  padding: 0.6rem 1rem;
-	  text-decoration: none;
-	  border-radius: 5px;
-	  font-size: 1rem;
-	  display: inline-block;
-	  transition: background-color 0.3s ease;
-	}
+        .banner-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            text-align: right;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
 
-	.back-button .btn:hover {
-	  background-color: #555;
-	}
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 0.2rem 0;
+            color: #222;
+        }
 
-    table {
-      width: 90%;
-      margin: 2rem auto;
-      border-collapse: collapse;
-    }
+        .event-date,
+        .event-location {
+            font-size: 1rem;
+            margin: 0.2rem 0;
+            font-weight: 400;
+            color: #444;
+        }
 
-    th, td {
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
+        .banner-center h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 800;
+            color: #222;
+        }
 
-    th {
-      background-color: #eee;
-    }
-	
-	.banner {
-	  background-color: #ffdb58;
-	  padding: 1rem 2rem;
-	  position: sticky;
-	  top: 0;
-	  z-index: 1000;
-	  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
+        #timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
 
-	.banner-inner {
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  flex-wrap: wrap;
-	  text-align: center;
-	}
+        .btn {
+            background-color: #333;
+            color: white;
+            padding: 0.6rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
 
-	.banner-left {
-	  flex: 1;
-	  text-align: left;
-	  min-width: 200px;
-	}
+        .btn:hover {
+            background-color: #555;
+        }
 
-	.banner-center {
-	  flex: 1;
-	  text-align: center;
-	  min-width: 200px;
-	}
+        @media (max-width: 600px) {
+            .banner-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
 
-	.banner-right {
-	  flex: 1;
-	  display: flex;
-	  flex-direction: column;
-	  align-items: flex-end;
-	  justify-content: center;
-	  text-align: right;
-	  gap: 0.5rem;
-	  min-width: 200px;
-	}
+            .banner-left,
+            .banner-center,
+            .banner-right {
+                text-align: center;
+                align-items: center;
+            }
 
-	.event-title {
-	  font-size: 1.2rem;
-	  font-weight: 600;
-	  margin: 0 0 0.2rem 0;
-	  color: #222;
-	}
+            .banner-right {
+                align-items: center;
+            }
+        }
 
-	.event-date,
-	.event-location {
-	  font-size: 1rem;
-	  margin: 0.2rem 0;
-	  font-weight: 400;
-	  color: #444;
-	}
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
 
-	.banner-center h1 {
-	  font-size: 2.5rem;
-	  margin: 0;
-	  font-weight: 800;
-	  color: #222;
-	}
+        button {
+            background-color: #333;
+            color: white;
+            padding: 0.6rem 1rem;
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-	#timer {
-	  font-size: 1.2rem;
-	  font-weight: bold;
-	  margin-bottom: 0.5rem;
-	  color: #333;
-	}
+        button:hover {
+            background-color: #555;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        table {
+            width: 90%;
+            margin: 2rem auto;
+            border-collapse: collapse;
+        }
 
-	.btn {
-	  background-color: #333;
-	  color: white;
-	  padding: 0.6rem 1rem;
-	  text-decoration: none;
-	  border-radius: 5px;
-	  font-size: 1rem;
-	  transition: background-color 0.3s ease;
-	}
+        th, td {
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
 
-	.btn:hover {
-	  background-color: #555;
-	}
+        th {
+            background-color: #eee;
+        }
+        
+        .back-button {
+            text-align: right;
+            margin: 1rem 2rem;
+        }
+        
+        .back-button .btn {
+            background-color: #333;
+            color: white;
+            padding: 0.6rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
 
-	@media (max-width: 600px) {
-	  .banner-inner {
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-	  }
-
-	  .banner-left,
-	  .banner-center,
-	  .banner-right {
-		text-align: center;
-		align-items: center;
-	  }
-
-	  .banner-right {
-		align-items: center;
-	  }
-	}
-  </style>
+        .back-button .btn:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
-	<script>
-	  function countdown() {
-		const targetDate = new Date("2025-12-20T10:00:00");
-		const now = new Date();
-		const diff = targetDate - now;
 
-		if (diff <= 0) {
-		  document.getElementById("timer").innerText = "Løpet har startet!";
-		  return;
-		}
-
-		const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-		const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-		const minutes = Math.floor((diff / (1000 * 60)) % 60);
-		const seconds = Math.floor((diff / 1000) % 60);
-
-		document.getElementById("timer").innerText =
-		  `${days} dager ${hours}t ${minutes}m ${seconds}s`;
-	  }
-
-	  setInterval(countdown, 1000);
-	</script>
 <body>
-  <div class="banner">
-	  <div class="banner-inner">
-		<div class="banner-left">
-		  <p class="event-title">Legendeløpet 2025</p>
-		  <p class="event-date">Lørdag 20. Desember</p>
-		  <p class="event-location">Mosvannet 10:00</p>
-		</div>
-
-		<div class="banner-center">
-		  <h1>Resultater</h1>
-		</div>
-
-		<div class="banner-right">
-		  <div id="timer"></div>
-		  <a href="index.html" class="btn">← Tilbake til forsiden</a>
-		</div>
-	  </div>
-	</div>
-
-  <main>
-    <div class="buttons">
-      <button data-year="all">Alle tider</button>
-      <button data-year="2022">2022</button>
-      <button data-year="2023">2023</button>
-      <button data-year="2024">2024</button>
+    <div class="banner">
+        <div class="banner-inner">
+            <div class="banner-left">
+                <p class="event-title">Legendeløpet 2025</p>
+                <p class="event-date">Lørdag 20. Desember</p>
+                <p class="event-location">Mosvannet 10:00</p>
+            </div>
+            <div class="banner-center">
+                <h1>Resultater</h1>
+            </div>
+            <div class="banner-right">
+                <div id="timer"></div>
+                <a href="index.html" class="btn">← Tilbake til forsiden</a>
+            </div>
+        </div>
     </div>
 
-    <div id="results"></div>
-  </main>
+    <main>
+        <div class="buttons">
+            <button class="btn" data-year="all">Alle tider</button>
+            <button class="btn" data-year="2022">2022</button>
+            <button class="btn" data-year="2023">2023</button>
+            <button class="btn" data-year="2024">2024</button>
+        </div>
 
- 
- <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+        <div id="results"></div>
 
-<script>
-  // 1. Firebase Configuration and Initialization
- const firebaseConfig = {
-    apiKey: "AIzaSyCfaUa6FEEj55L8YqdKTe5YE3mMLHqDBW4",
-    authDomain: "legendelopet-resultat.firebaseapp.com",
-    projectId: "legendelopet-resultat",
-    storageBucket: "legendelopet-resultat.appspot.com", // ✅ fix typo here
-    messagingSenderId: "982148824748",
-    appId: "1:982148824748:web:878a9fb9d58f93d564a909",
-    measurementId: "G-QMF0EKMT47"
-  };
+        <!-- Chart container (moved below the results table) -->
+        <div id="chart-container" class="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-md hidden">
+            <h2 id="chart-title" class="text-xl font-semibold text-center text-gray-800 mb-4"></h2>
+            <canvas id="athleteTimeChart"></canvas>
+        </div>
+    </main>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        function countdown() {
+            const targetDate = new Date("2025-12-20T10:00:00");
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById("timer").innerText = "Løpet har startet!";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById("timer").innerText =
+                `${days} dager ${hours}t ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(countdown, 1000);
+
+        // 1. Firebase Configuration and Initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfaUa6FEEj55L8YqdKTe5YE3mMLHqDBW4",
+            authDomain: "legendelopet-resultat.firebaseapp.com",
+            projectId: "legendelopet-resultat",
+            storageBucket: "legendelopet-resultat.appspot.com",
+            messagingSenderId: "982148824748",
+            appId: "1:982148824748:web:878a9fb9d58f93d564a909",
+            measurementId: "G-QMF0EKMT47"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 2. Utility Functions
+        function calculatePace(time) {
+            const [min, sec] = time.split(":").map(Number);
+            const totalSec = min * 60 + sec;
+            const pace = totalSec / 3;
+            const paceMin = Math.floor(pace / 60);
+            const paceSec = Math.round(pace % 60);
+            return `${paceMin}:${paceSec.toString().padStart(2, '0')}`;
+        }
+
+        function timeToSeconds(time) {
+            const [min, sec] = time.split(":").map(Number);
+            return min * 60 + sec;
+        }
+        
+        function secondsToTime(totalSeconds) {
+            const min = Math.floor(totalSeconds / 60);
+            const sec = Math.round(totalSeconds % 60);
+            return `${min}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // 3. Main Display Function
+        function showTab(year, data) {
+            const container = document.getElementById("results");
+            container.innerHTML = "";
+            
+            // Fix: Explicitly hide the chart and remove inline display style
+            const chartContainer = document.getElementById("chart-container");
+            chartContainer.classList.add("hidden");
+            chartContainer.style.display = "none";
+
+            // Hide the back button in the main view
+            const existingBackBtn = document.getElementById("back-btn");
+            if (existingBackBtn) {
+                existingBackBtn.remove();
+            }
+
+            let filtered;
+
+            if (year === "all") {
+                filtered = [...data]
+                    .filter(r => typeof r.allRank === "number")
+                    .sort((a, b) => a.allRank - b.allRank);
+            } else {
+                const yearNum = parseInt(year);
+                filtered = data
+                    .filter(r => r.year === yearNum)
+                    .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+                    .map((r, i) => ({
+                        ...r,
+                        pace: calculatePace(r.time_display),
+                        rank: i + 1
+                    }));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
+                return;
+            }
+
+            const headers = year === "all"
+                ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
+                : ["Plassering", "Navn", "Tid", "Fart"];
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const headerRow = document.createElement("tr");
+            headers.forEach(h => {
+                const th = document.createElement("th");
+                th.innerText = h;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            filtered.forEach(r => {
+                const row = document.createElement("tr");
+                const cells = year === "all"
+                    ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
+                    : [r.rank, r.name, r.time_display, r.pace];
+
+                cells.forEach((c, i) => {
+                    const td = document.createElement("td");
+                    if (headers[i] === "Navn" && r.athlete_id) {
+                        td.innerHTML = `<a href="#" onclick="showAthleteResults('${r.athlete_id}')">${c}</a>`;
+                    } else if (headers[i] === "Plassering det året") {
+                         td.innerText = r.rank;
+                    }
+                    else {
+                        td.innerText = c;
+                    }
+                    row.appendChild(td);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+
+        // 4. Charting Logic
+        let myChart;
+
+        function renderChart(athleteName, years, times, trendlinePoints) {
+            const ctx = document.getElementById('athleteTimeChart');
+            document.getElementById('chart-title').innerText = `${athleteName}s resultater over tid`;
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Tid',
+                        data: times,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4,
+                        fill: false
+                    }, {
+                        label: 'Trendlinje',
+                        data: trendlinePoints,
+                        borderColor: 'black',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0.4,
+                        borderDash: [5, 5] // Dotted line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += secondsToTime(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: false // The title is now in the H2 element
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'År'
+                            },
+                            ticks: {
+                                autoSkip: false
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Tid (min:sek)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return secondsToTime(value);
+                                }
+                            },
+                            reverse: true // This flips the y-axis
+                        }
+                    }
+                },
+            });
+        }
+
+        // Linear regression function to calculate the trendline
+        function linreg(x, y) {
+            const n = x.length;
+            let sum_x = 0;
+            let sum_y = 0;
+            let sum_xy = 0;
+            let sum_xx = 0;
+
+            for (let i = 0; i < n; i++) {
+                sum_x += x[i];
+                sum_y += y[i];
+                sum_xy += (x[i] * y[i]);
+                sum_xx += (x[i] * x[i]);
+            }
+
+            const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+            const intercept = (sum_y - slope * sum_x) / n;
+            return { slope, intercept };
+        }
+
+        // 5. Fetch Data from Firestore and Show Initial Table
+        let allResults = [];
+
+        db.collection("results").get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    allResults.push(doc.data());
+                });
+
+                const sortedAll = [...allResults]
+                    .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display));
+
+                sortedAll.forEach((r, i) => {
+                    r.allRank = i + 1;
+                    r.pace = calculatePace(r.time_display);
+                });
+
+                showTab("all", allResults); // Show the initial table without a chart
+            })
+            .catch(error => {
+                console.error("Firestore fetch error:", error);
+                document.getElementById("results").innerHTML = "<p>Kunne ikke hente resultater.</p>";
+            });
+
+        // 6. Wire Up Buttons
+        document.querySelectorAll("button.btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const year = btn.getAttribute("data-year");
+                showTab(year, allResults);
+            });
+        });
+
+        // 7. Show Athlete's Chart and Data
+        function showAthleteResults(id) {
+            const container = document.getElementById("results");
+            container.innerHTML = ""; // Clear existing table
+            document.getElementById("chart-container").classList.remove("hidden");
+            document.getElementById("chart-container").style.display = "block";
 
 
-  // 2. Utility Functions
-  function calculatePace(time) {
-    const [min, sec] = time.split(":").map(Number);
-    const totalSec = min * 60 + sec;
-    const pace = totalSec / 3;
-    const paceMin = Math.floor(pace / 60);
-    const paceSec = Math.round(pace % 60);
-    return `${paceMin}:${paceSec.toString().padStart(2, '0')}`;
-  }
+            const athleteResults = allResults
+                .filter(r => r.athlete_id === id)
+                .sort((a, b) => a.year - b.year);
+            
+            if (athleteResults.length === 0) {
+                alert("No results found for this athlete.");
+                return;
+            }
 
-  function timeToSeconds(time) {
-    const [min, sec] = time.split(":").map(Number);
-    return min * 60 + sec;
-  }
+            // Create a back button
+            const backBtn = document.createElement("button");
+            backBtn.innerText = "← Tilbake til alle resultater";
+            backBtn.classList.add("btn");
+            backBtn.id = "back-btn";
+            backBtn.addEventListener("click", () => showTab("all", allResults));
+            
+            // Append the back button to the buttons container
+            document.querySelector(".buttons").appendChild(backBtn);
 
-  // 3. Main Display Function
-  function showTab(year, data) {
-	  const container = document.getElementById("results");
-	  container.innerHTML = "";
+            const athleteName = athleteResults[0].name;
 
-	  let filtered;
+            // Create and populate the new table for the specific athlete
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
 
-	  if (year === "all") {
-		// ✅ Show all results, sorted by allRank
-		filtered = [...data]
-		  .filter(r => typeof r.allRank === "number")
-		  .sort((a, b) => a.allRank - b.allRank);
-	  } else {
-		// ✅ Filter by year and assign rank + pace
-		const yearNum = parseInt(year);
-		filtered = data
-		  .filter(r => r.year === yearNum)
-		  .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
-		  .map((r, i) => ({
-			...r,
-			pace: calculatePace(r.time_display),
-			rank: i + 1
-		  }));
-	  }
+            const headers = ["År", "Tid", "Fart", "Plassering det året"];
+            const headerRow = document.createElement("tr");
+            headers.forEach(h => {
+                const th = document.createElement("th");
+                th.innerText = h;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
 
-	  if (filtered.length === 0) {
-		container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
-		return;
-	  }
+            athleteResults.forEach(r => {
+                const row = document.createElement("tr");
+                const cells = [r.year, r.time_display, r.pace, r.rank];
+                cells.forEach(c => {
+                    const td = document.createElement("td");
+                    td.innerText = c;
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
 
-	  const headers = year === "all"
-		? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
-		: ["Plassering", "Navn", "Tid", "Fart"];
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
 
-	  const table = document.createElement("table");
-	  const thead = document.createElement("thead");
-	  const tbody = document.createElement("tbody");
+            // Chart data
+            const years = athleteResults.map(r => r.year);
+            const times = athleteResults.map(r => timeToSeconds(r.time_display));
+            
+            // Calculate trendline
+            const { slope, intercept } = linreg(years, times);
+            const trendlinePoints = years.map(year => slope * year + intercept);
 
-	  const headerRow = document.createElement("tr");
-	  headers.forEach(h => {
-		const th = document.createElement("th");
-		th.innerText = h;
-		headerRow.appendChild(th);
-	  });
-	  thead.appendChild(headerRow);
-
-	  filtered.forEach(r => {
-		const row = document.createElement("tr");
-		const cells = year === "all"
-		  ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
-		  : [r.rank, r.name, r.time_display, r.pace];
-
-		cells.forEach((c, i) => {
-		  const td = document.createElement("td");
-		  if (headers[i] === "Navn" && r.athlete_id) {
-			td.innerHTML = `<a href="#" onclick="showAthlete('${r.athlete_id}')">${c}</a>`;
-		  } else {
-			td.innerText = c;
-		  }
-		  row.appendChild(td);
-		});
-
-		tbody.appendChild(row);
-	  });
-
-	  table.appendChild(thead);
-	  table.appendChild(tbody);
-	  container.appendChild(table);
-	}
-
-  // 4. Fetch Data from Firestore
-  let allResults = [];
-
-  db.collection("results").get()
-	  .then(snapshot => {
-		snapshot.forEach(doc => {
-		  allResults.push(doc.data());
-		});
-
-		// ✅ Sort full list and assign allRank + pace
-		const sortedAll = [...allResults]
-		  .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display));
-
-		sortedAll.forEach((r, i) => {
-		  r.allRank = i + 1;
-		  r.pace = calculatePace(r.time_display);
-		});
-
-		showTab("all", allResults);
-	  })
-	  .catch(error => {
-		console.error("Firestore fetch error:", error);
-		document.getElementById("results").innerHTML = "<p>Kunne ikke hente resultater.</p>";
-	  });
-
-  // 5. Wire Up Buttons
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const year = btn.getAttribute("data-year");
-      showTab(year, allResults);
-    });
-  });
-
-  // 6. Optional: Athlete Detail View
-  function showAthlete(id) {
-    const athleteResults = allResults.filter(r => r.athlete_id === id);
-    showTab("all", athleteResults); // or create a custom view
-  }
-</script>
-...
-<div id="results"></div>
-</main>
+            renderChart(athleteName, years, times, trendlinePoints);
+        }
+    </script>
 </body>
 </html>
