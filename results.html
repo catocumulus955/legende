@@ -20,9 +20,7 @@
         .banner {
             background-color: #ffdb58;
             padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: static;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -77,13 +75,6 @@
             margin: 0;
             font-weight: 800;
             color: #222;
-        }
-
-        #timer {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #333;
         }
 
         .btn {
@@ -143,7 +134,7 @@
             background-color: #555;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
-        
+
         table {
             width: 90%;
             margin: 2rem auto;
@@ -159,12 +150,12 @@
         th {
             background-color: #eee;
         }
-        
+
         .back-button {
             text-align: right;
             margin: 1rem 2rem;
         }
-        
+
         .back-button .btn {
             background-color: #333;
             color: white;
@@ -194,7 +185,6 @@
                 <h1>Resultater</h1>
             </div>
             <div class="banner-right">
-                <div id="timer"></div>
                 <a href="index.html" class="btn">← Tilbake til forsiden</a>
             </div>
         </div>
@@ -222,27 +212,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script>
-        function countdown() {
-            const targetDate = new Date("2025-12-20T10:00:00");
-            const now = new Date();
-            const diff = targetDate - now;
-
-            if (diff <= 0) {
-                document.getElementById("timer").innerText = "Løpet har startet!";
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-
-            document.getElementById("timer").innerText =
-                `${days} dager ${hours}t ${minutes}m ${seconds}s`;
-        }
-
-        setInterval(countdown, 1000);
-
         // 1. Firebase Configuration and Initialization
         const firebaseConfig = {
             apiKey: "AIzaSyCfaUa6FEEj55L8YqdKTe5YE3mMLHqDBW4",
@@ -271,7 +240,7 @@
             const [min, sec] = time.split(":").map(Number);
             return min * 60 + sec;
         }
-        
+
         function secondsToTime(totalSeconds) {
             const min = Math.floor(totalSeconds / 60);
             const sec = Math.round(totalSeconds % 60);
@@ -282,7 +251,7 @@
         function showTab(year, data) {
             const container = document.getElementById("results");
             container.innerHTML = "";
-            
+
             // Fix: Explicitly hide the chart and remove inline display style
             const chartContainer = document.getElementById("chart-container");
             chartContainer.classList.add("hidden");
@@ -511,7 +480,7 @@
             const athleteResults = allResults
                 .filter(r => r.athlete_id === id)
                 .sort((a, b) => a.year - b.year);
-            
+
             if (athleteResults.length === 0) {
                 alert("No results found for this athlete.");
                 return;
@@ -523,7 +492,7 @@
             backBtn.classList.add("btn");
             backBtn.id = "back-btn";
             backBtn.addEventListener("click", () => showTab("all", allResults));
-            
+
             // Append the back button to the buttons container
             document.querySelector(".buttons").appendChild(backBtn);
 
@@ -561,7 +530,7 @@
             // Chart data
             const years = athleteResults.map(r => r.year);
             const times = athleteResults.map(r => timeToSeconds(r.time_display));
-            
+
             // Calculate trendline
             const { slope, intercept } = linreg(years, times);
             const trendlinePoints = years.map(year => slope * year + intercept);
