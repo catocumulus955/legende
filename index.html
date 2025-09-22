@@ -111,8 +111,16 @@
     }
 
     .info {
-      text-align: center;
-      padding: 2rem;
+      text-align: left;
+      padding: 4rem 2rem;
+      background-color: #fcf9e7; /* Light yellow background */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    .info h2 {
+      color: #af8d00; /* Darker yellow for the text */
+      font-size: 2.5rem;
+      margin-bottom: 1rem; /* Adds space below the heading */
     }
 
     .info img {
@@ -120,13 +128,106 @@
       max-width: 90%;
       height: auto;
       margin-top: 1rem;
+      margin-bottom: 2rem;
       border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Legg til skygge */
     }
+
+    .info-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .info-content {
+        flex-direction: row;
+      }
+    }
+    .info-text {
+      border-left: 3px solid #af8d00;
+      padding-left: 1rem;
+    }
+
   .container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 1rem;
   }
+
+  /* Champion section styling */
+.champion-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: #e8f5e9; /* Light green background to stand out */
+}
+
+.champion-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .champion-container {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .champion-details {
+    flex: 1;
+  }
+}
+
+.champion-photo img {
+  width: 250px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.champion-details h2 {
+  font-family: 'Lato', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #2e7d32; /* A dark green for a fresh look */
+  margin: 0;
+  line-height: 1.2;
+}
+
+.champion-name {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.champion-stats {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #555;
+  margin: 0;
+}
+
+.champion-stats strong {
+  color: #000;
+  font-weight: 900;
+}
+
+.champion-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #666;
+  margin-top: 1rem;
+  border-left: 3px solid #66bb6a; /* A decorative left border */
+  padding-left: 1rem;
+}
 
   </style>
 </head>
@@ -157,12 +258,37 @@
   <main>
     <section class="info">
       <h2>Om løpet</h2>
-      <p>
-      Legendeløpet blir arrangert "offisielt" for fjerde år på rad.<br>
-      Én runde rundt Mosvatnet (3041 meter), mot klokken, start fra kapellet.<br>
-      Status per 21. september er at vi venter på godkjenning fra kommunen da Mosvatnet er blitt et fredet naturreservat.
+      <div class="info-content">
+        <img src="last_year.JPEG" alt="Legendeløpet 2024" />
+        <div class="info-text">
+          <p>
+          Legendeløpet blir arrangert "offisielt" for fjerde år på rad.<br>
+          Én runde rundt Mosvatnet (3041 meter), mot klokken, start fra kapellet.<br>
+          Status per 21. september er at vi venter på godkjenning fra kommunen da Mosvatnet er blitt et fredet naturreservat.
+          </p>
+        </div>
+      </div>
+</section>
+
+      <section class="champion-section">
+  <div class="champion-container">
+    <div class="champion-photo">
+      <img src="champion.JPG" alt="Karl Magnus Torgrimsen" />
+    </div>
+    <div class="champion-details">
+      <h2>Regjerende mester</h2>
+      <p class="champion-name">Karl Magnus Torgrimsen</p>
+      <p class="champion-stats">
+        Tid: <strong>10:46</strong><br>
+        Fart: <strong>3:35/km</strong>
       </p>
-      <img src="last_year.JPEG" alt="Legendeløpet 2024" />
+      <div class="champion-description">
+        <p>
+          I 2024 tok Karli en overbevisende seier og satt ny stevnerekord. Han har satt en ny PR på 5k (18:31) som tilsier at han hadde vunnet dersom han løp 5km tempoet sitt. Tiden vil vise om resten av gutta har trent nok til å gi pokalen en ny og verdig eier
+        </p>
+      </div>
+    </div>
+  </div>
     </section>
   </main>
 </div>
