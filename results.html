@@ -253,86 +253,92 @@
         }
 
         // 3. Main Display Function
-        function showTab(year, data) {
-            const container = document.getElementById("results");
-            container.innerHTML = "";
+				function showTab(year, data) {
+				    const container = document.getElementById("results");
+				    container.innerHTML = "";
 
-            // Fix: Explicitly hide the chart and remove inline display style
-            const chartContainer = document.getElementById("chart-container");
-            chartContainer.classList.add("hidden");
-            chartContainer.style.display = "none";
+				    const chartContainer = document.getElementById("chart-container");
+				    chartContainer.classList.add("hidden");
+				    chartContainer.style.display = "none";
 
-            // Hide the back button in the main view
-            const existingBackBtn = document.getElementById("back-btn");
-            if (existingBackBtn) {
-                existingBackBtn.remove();
-            }
+				    const existingBackBtn = document.getElementById("back-btn");
+				    if (existingBackBtn) {
+				        existingBackBtn.remove();
+				    }
 
-            let filtered;
+				    let filtered;
 
-            if (year === "all") {
-                filtered = [...data]
-                    .filter(r => typeof r.allRank === "number")
-                    .sort((a, b) => a.allRank - b.allRank);
-            } else {
-                const yearNum = parseInt(year);
-                filtered = data
-                    .filter(r => r.year === yearNum)
-                    .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
-                    .map((r, i) => ({
-                        ...r,
-                        pace: calculatePace(r.time_display),
-                        rank: i + 1
-                    }));
-            }
+				    if (year === "all") {
+				        filtered = [...data]
+				            .filter(r => typeof r.allRank === "number")
+				            .sort((a, b) => a.allRank - b.allRank);
+				    } else {
+				        const yearNum = parseInt(year);
+				        filtered = data
+				            .filter(r => r.year === yearNum)
+				            .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+				            .map((r, i) => ({
+				                ...r,
+				                pace: calculatePace(r.time_display),
+				                rank: i + 1
+				            }));
 
-            if (filtered.length === 0) {
-                container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
-                return;
-            }
+				        // 1. Find the winner's time (in seconds)
+				        const winnerTimeInSeconds = timeToSeconds(filtered[0].time_display);
 
-            const headers = year === "all"
-                ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
-                : ["Plassering", "Navn", "Tid", "Fart"];
+				        // 2. Calculate the difference for each runner
+				        filtered = filtered.map(r => ({
+				            ...r,
+				            behindWinner: timeToSeconds(r.time_display) - winnerTimeInSeconds
+				        }));
+				    }
 
-            const table = document.createElement("table");
-            const thead = document.createElement("thead");
-            const tbody = document.createElement("tbody");
+				    if (filtered.length === 0) {
+				        container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
+				        return;
+				    }
 
-            const headerRow = document.createElement("tr");
-            headers.forEach(h => {
-                const th = document.createElement("th");
-                th.innerText = h;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
+				    const headers = year === "all"
+				        ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
+				        : ["Plassering", "Navn", "Tid", "Fart", "Bak"]; // 3. Add "Bak" header
 
-            filtered.forEach(r => {
-                const row = document.createElement("tr");
-                const cells = year === "all"
-                    ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
-                    : [r.rank, r.name, r.time_display, r.pace];
+				    const table = document.createElement("table");
+				    const thead = document.createElement("thead");
+				    const tbody = document.createElement("tbody");
 
-                cells.forEach((c, i) => {
-                    const td = document.createElement("td");
-                    if (headers[i] === "Navn" && r.athlete_id) {
-                        td.innerHTML = `<a href="#" onclick="showAthleteResults('${r.athlete_id}')">${c}</a>`;
-                    } else if (headers[i] === "Plassering det året") {
-                         td.innerText = r.rank;
-                    }
-                    else {
-                        td.innerText = c;
-                    }
-                    row.appendChild(td);
-                });
+				    const headerRow = document.createElement("tr");
+				    headers.forEach(h => {
+				        const th = document.createElement("th");
+				        th.innerText = h;
+				        headerRow.appendChild(th);
+				    });
+				    thead.appendChild(headerRow);
 
-                tbody.appendChild(row);
-            });
+				    filtered.forEach(r => {
+				        const row = document.createElement("tr");
+				        const cells = year === "all"
+				            ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
+				            : [r.rank, r.name, r.time_display, r.pace, secondsToTime(r.behindWinner)]; // 3. Add "behindWinner" value
 
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            container.appendChild(table);
-        }
+				        cells.forEach((c, i) => {
+				            const td = document.createElement("td");
+				            if (headers[i] === "Navn" && r.athlete_id) {
+				                td.innerHTML = `<a href="#" onclick="showAthleteResults('${r.athlete_id}')">${c}</a>`;
+				            } else if (headers[i] === "Plassering det året") {
+				                td.innerText = r.rank;
+				            } else {
+				                td.innerText = c;
+				            }
+				            row.appendChild(td);
+				        });
+
+				        tbody.appendChild(row);
+				    });
+
+				    table.appendChild(thead);
+				    table.appendChild(tbody);
+				    container.appendChild(table);
+				}
 
         // 4. Charting Logic
         let myChart;
