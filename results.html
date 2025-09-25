@@ -184,6 +184,30 @@
         .back-button .btn:hover {
             background-color: #555;
         }
+		/* New search bar styling */
+		.search-container {
+			display: flex;
+			justify-content: center;
+			margin: 1rem 0;
+		}
+
+		#searchInput {
+			width: 80%;
+			max-width: 500px;
+			padding: 0.75rem 1rem;
+			font-size: 1rem;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			transition: border-color 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		#searchInput:focus {
+			outline: none;
+			border-color: #ffdb58;
+			box-shadow: 0 0 0 3px rgba(255, 219, 88, 0.4);
+		}
+		
     </style>
 </head>
 
@@ -266,91 +290,107 @@
         }
 
         // 3. Main Display Function
-				function showTab(year, data) {
-				    const container = document.getElementById("results");
-				    container.innerHTML = "";
+				function showTab(year, data, searchTerm = "") {
+				    const container = document.getElementById("results");
+				    container.innerHTML = "";
+					const searchInput = document.getElementById("searchInput");
 
-				    const chartContainer = document.getElementById("chart-container");
-				    chartContainer.classList.add("hidden");
-				    chartContainer.style.display = "none";
+					// Hide search bar if not on "Alle tider" tab
+					if (year === "all") {
+						searchInput.style.display = "block";
+						searchInput.value = searchTerm;
+					} else {
+						searchInput.style.display = "none";
+					}
 
-				    const existingBackBtn = document.getElementById("back-btn");
-				    if (existingBackBtn) {
-				        existingBackBtn.remove();
-				    }
 
-				    let filtered;
+				    const chartContainer = document.getElementById("chart-container");
+				    chartContainer.classList.add("hidden");
+				    chartContainer.style.display = "none";
 
-				    if (year === "all") {
-				        filtered = [...data]
-				            .filter(r => typeof r.allRank === "number")
-				            .sort((a, b) => a.allRank - b.allRank);
-				    } else {
-				        const yearNum = parseInt(year);
-				        filtered = data
-				            .filter(r => r.year === yearNum)
-				            .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
-				            .map((r, i) => ({
-				                ...r,
-				                pace: calculatePace(r.time_display),
-				                rank: i + 1
-				            }));
+				    const existingBackBtn = document.getElementById("back-btn");
+				    if (existingBackBtn) {
+				        existingBackBtn.remove();
+				    }
 
-				        // 1. Find the winner's time (in seconds)
-				        const winnerTimeInSeconds = timeToSeconds(filtered[0].time_display);
+				    let filtered;
 
-				        // 2. Calculate the difference for each runner
-				        filtered = filtered.map(r => ({
-				            ...r,
-				            behindWinner: timeToSeconds(r.time_display) - winnerTimeInSeconds
-				        }));
-				    }
+				    if (year === "all") {
+				        filtered = [...data]
+				            .filter(r => typeof r.allRank === "number")
+				            .sort((a, b) => a.allRank - b.allRank);
+						// Apply search filter
+						if (searchTerm) {
+							const lowerCaseSearchTerm = searchTerm.toLowerCase();
+							filtered = filtered.filter(r => r.name.toLowerCase().includes(lowerCaseSearchTerm));
+						}
 
-				    if (filtered.length === 0) {
-				        container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
-				        return;
-				    }
+				    } else {
+				        const yearNum = parseInt(year);
+				        filtered = data
+				            .filter(r => r.year === yearNum)
+				            .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display))
+				            .map((r, i) => ({
+				                ...r,
+				                pace: calculatePace(r.time_display),
+				                rank: i + 1
+				            }));
 
-				    const headers = year === "all"
-				        ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
-				        : ["Plassering", "Navn", "Tid", "Fart", "Bak"]; // 3. Add "Bak" header
+				        // 1. Find the winner's time (in seconds)
+				        const winnerTimeInSeconds = timeToSeconds(filtered[0].time_display);
 
-				    const table = document.createElement("table");
-				    const thead = document.createElement("thead");
-				    const tbody = document.createElement("tbody");
+				        // 2. Calculate the difference for each runner
+				        filtered = filtered.map(r => ({
+				            ...r,
+				            behindWinner: timeToSeconds(r.time_display) - winnerTimeInSeconds
+				        }));
+				    }
 
-				    const headerRow = document.createElement("tr");
-				    headers.forEach(h => {
-				        const th = document.createElement("th");
-				        th.innerText = h;
-				        headerRow.appendChild(th);
-				    });
-				    thead.appendChild(headerRow);
+				    if (filtered.length === 0) {
+				        container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
+				        return;
+				    }
 
-				    filtered.forEach(r => {
-				        const row = document.createElement("tr");
-				        const cells = year === "all"
-				            ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
-				            : [r.rank, r.name, r.time_display, r.pace, secondsToTime(r.behindWinner)]; // 3. Add "behindWinner" value
+				    const headers = year === "all"
+				        ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
+				        : ["Plassering", "Navn", "Tid", "Fart", "Bak"]; // 3. Add "Bak" header
 
-				        cells.forEach((c, i) => {
-				            const td = document.createElement("td");
-				            if (headers[i] === "Navn" && r.athlete_id) {
-				                td.innerHTML = `<a href="#" onclick="showAthleteResults('${r.athlete_id}')">${c}</a>`;
-				            } else if (headers[i] === "Plassering det året") {
-				                td.innerText = r.rank;
-				            } else {
-				                td.innerText = c;
-				            }
-				            row.appendChild(td);
-				        });
+				    const table = document.createElement("table");
+				    const thead = document.createElement("thead");
+				    const tbody = document.createElement("tbody");
 
-				        tbody.appendChild(row);
-				    });
+				    const headerRow = document.createElement("tr");
+				    headers.forEach(h => {
+				        const th = document.createElement("th");
+				        th.innerText = h;
+				        headerRow.appendChild(th);
+				    });
+				    thead.appendChild(headerRow);
 
-				    table.appendChild(thead);
-				    table.appendChild(tbody);
-				    container.appendChild(table);
+				    filtered.forEach(r => {
+				        const row = document.createElement("tr");
+				        const cells = year === "all"
+				            ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
+				            : [r.rank, r.name, r.time_display, r.pace, secondsToTime(r.behindWinner)]; // 3. Add "behindWinner" value
+
+				        cells.forEach((c, i) => {
+				            const td = document.createElement("td");
+				            if (headers[i] === "Navn" && r.athlete_id) {
+				                td.innerHTML = `<a href="#" onclick="showAthleteResults('${r.athlete_id}')">${c}</a>`;
+				            } else if (headers[i] === "Plassering det året") {
+				                td.innerText = r.rank;
+				            } else {
+				                td.innerText = c;
+				            }
+				            row.appendChild(td);
+				        });
+
+				        tbody.appendChild(row);
+				    });
+
+				    table.appendChild(thead);
+				    table.appendChild(tbody);
+				    container.appendChild(table);
 				}
 
         // 4. Charting Logic
@@ -510,7 +550,12 @@
                 return;
             }
 
-            // Create a back button
+            // New search function
+			function searchNames() {
+				const searchTerm = document.getElementById("searchInput").value;
+				showTab("all", allResults, searchTerm);
+			}
+			// Create a back button
             const backBtn = document.createElement("button");
             backBtn.innerText = "← Tilbake til alle resultater";
             backBtn.classList.add("btn");
@@ -564,6 +609,7 @@
     </script>
 </body>
 </html>
+
 
 
 
