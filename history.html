@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMF0EKMT47"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'G-QMF0EKMT47');
+  </script>
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legendeløpet Historikk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    main {
+      margin-top: 2rem;
+    }
+
+    .banner {
+      background-color: #ffdb58;
+      padding: 1rem 2rem;
+      position: static;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .banner-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .banner-left {
+      flex: 1;
+      text-align: left;
+      min-width: 200px;
+    }
+
+    .banner-center {
+      flex: 1;
+      text-align: center;
+      min-width: 200px;
+    }
+
+    .banner-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column; /* Endret til column for å stable knapper vertikalt */
+      align-items: flex-end; /* Justerer knappene til høyre */
+      justify-content: center;
+      text-align: right;
+      gap: 0.5rem; /* Mindre avstand mellom stablede knapper */
+      min-width: 200px;
+    }
+
+    .event-date,
+    .event-location {
+      font-size: 1rem;
+      margin: 0.2rem 0;
+      font-weight: 400;
+      color: #444;
+    }
+
+    .banner-center h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      font-weight: 800;
+      color: #222;
+    }
+    
+    .banner-center p {
+        margin: 0.2rem 0 0 0;
+    }
+
+    #timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .btn {
+      background-color: #333; /* Standard sort farge */
+      color: white;
+      padding: 0.6rem 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    /* Fjernet .btn-primary stilene, da alle knapper skal være like */
+
+    .btn:hover {
+      background-color: #555;
+    }
+    
+    @media (max-width: 768px) {
+      .banner-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .banner-left,
+      .banner-center,
+      .banner-right {
+        text-align: center;
+        align-items: center;
+        min-width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      .banner-right {
+        justify-content: center;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    /* History Section Styling */
+    .history-entry {
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .history-entry:hover {
+        transform: translateY(-5px);
+    }
+
+    .history-entry h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid;
+    }
+    /* ------------------------------------------------------------------ */
+    /* NY STYLING FOR VERTIKALT (PORTRETT) BILDE (MED TEKSTOMBRYTING) */
+    /* ------------------------------------------------------------------ */
+    .entry-imageVertical {
+        min-width: 280px;
+        text-align: center;
+    }
+    .entry-imageVertical img {
+      max-width: 100%;
+      width: 280px; /* Ny, større stående bredde */
+      height: 380px; /* Ny, større stående høyde */
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (min-width: 768px) {
+        .entry-imageVertical {
+            float: left; /* Bildet flyter til venstre */
+            margin: 0 2rem 1rem 0; /* Legger til plass rundt bildet */
+        }
+    }
+
+    /* Colors for history entries */
+    .history-entry-2025-placeholder {
+      background-color: #ffcccb; /* Light red for placeholder */
+      border: 2px dashed #dc3545;
+      opacity: 0.6;
+    }
+    .history-entry-2025-placeholder h2 { border-color: #dc3545; color: #dc3545; }
+
+    .history-entry-2024 {
+      background-color: #f7f3f9; /* Light purple/grey */
+      border: 1px solid #c3b1d7;
+    }
+    .history-entry-2024 h2 { border-color: #6a1b9a; color: #6a1b9a; }
+
+    .history-entry-2023 {
+      background-color: #fff9e6; /* Light yellow */
+      border: 1px solid #e0c88a;
+    }
+    .history-entry-2023 h2 { border-color: #d8a700; color: #d8a700; }
+
+    .history-entry-2022 {
+      background-color: #e6f9f9; /* Light cyan */
+      border: 1px solid #a8c8c8;
+    }
+    .history-entry-2022 h2 { border-color: #008080; color: #008080; }
+
+
+    .history-entry-pre2022 {
+      background-color: #f0f0f0; /* Simple light grey */
+      border: 1px solid #ccc;
+    }
+    .history-entry-pre2022 h2 { border-color: #555; color: #555; }
+
+
+    .entry-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    @media (min-width: 768px) {
+      .entry-content {
+        display: block;
+    }
+
+    .entry-image {
+        min-width: 350px;
+        text-align: center;
+    }
+    .entry-image img {
+      max-width: 100%;
+      width: 350px;
+      height: 230px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .entry-image p {
+        font-size: 0.85rem;
+        color: #777;
+        margin-top: 0.5rem;
+    }
+    @media (min-width: 768px) {
+        .entry-image {
+            float: left; /* Bildet flyter til venstre */
+            margin: 0 2rem 1rem 0; /* Legger til plass rundt bildet */
+        }
+
+    .entry-text {
+      flex: 1;
+      line-height: 1.6;
+    }
+
+    .entry-text h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="container">
+    <div class="banner-inner">
+
+      <div class="banner-left">
+      <div id="timer"></div>
+      <p class="event-date">Lørdag 20. Desember</p>
+      <p class="event-location">Mosvatnet 10:30</p>
+      </div>
+
+      <div class="banner-center">
+      <h1>Legendeløpet</h1>
+      </div>
+
+      <div class="banner-right">
+        <!-- Lenker for navigasjon (stablet vertikalt) -->
+        <!-- Påmelding: Farge endret til svart (.btn) -->
+        <a href="https://www.eqtiming.no" class="btn">Påmelding</a>
+        <!-- Resultater: Forblir svart -->
+        <a href="results.html" class="btn">Resultater</a>
+        <!-- Hjem: Tekst og plassering endret, nå nederst -->
+        <a href="index.html" class="btn">← Tilbake til forsiden</a>
+      </div>
+    </div>
+    </div>
+  </div>
+<div class="container">
+  <main>
+    <!-- 2025 - KOMMENTERES UT TIL ETTER LØPET -->
+    <!--
+    <section class="history-entry history-entry-2025-placeholder">
+        <h2>Legendeløpet 2025: Det store spørsmålet</h2>
+        <div class="entry-content">
+            <div class="entry-image">
+                <img src="placeholder_2025.jpg" alt="Bilde fra Legendeløpet 2025 (placeholder)" />
+                <p>Bilde: Kommer snart...</p>
+            </div>
+            <div class="entry-text">
+                <h3>Forventninger og Spådommer</h3>
+                <p>
+                    Hvilke dueller vil vi se i år?
+                </p>
+                <p>
+                    <strong>Vinnertid: [Kommer]</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+-->
+
+    
+    <!-- 2024 - Nyeste inntil 2025 -->
+    <section class="history-entry history-entry-2024">
+        <h2>2024</h2>
+        <div class="entry-content">
+            <div class="entry-image">
+                <img src="photos/legendelopet_2024.jpg" onerror="this.src='https://placehold.co/300x200/6a1b9a/ffffff?text=2024+Vinner'" alt="Vinneren av Legendeløpet 2024: Karl Magnus Torgrimsen" />
+                <p>2024: Voksende deltakelse.</p>
+            </div>
+            <div class="entry-text">
+                <h3>Ny stevnerekord</h3>
+                <p>
+                    Året 2024 begynner det å ta seg opp. Flere inviterte, mange treningstimer lagt ned (for noen) og generelt gode tider på folk. Dette året var det
+                    også urovekkende stor DNS-liste. Hele 8 stk som hadde meldt seg på valgte å ikke løpe av diverse dårlige grunner. Igjen vil jeg henge ut Adam, da
+                    han for andre år på rad ikke stiller til start på grunn av alkoholrelaterte årsaker.
+                </p>
+                <p>
+                    Det var likevel 14 legender som fullførte dette året. Uheldighvis var vår regjerende mester Lasse ikke en av dem. Hele 6 deltakere løp under
+                    <strong>12:00</strong>. Adams startet hardt sammen med Karl Magnus, bak i feltet var vi lite bekymret for den skadeutsatte fotballspilleren.
+                    Adams falt av etter en drøy kilometer og forsvant bak i feltet. Endte til slutt på tiden <strong>12:27</strong>, respektabel tid, men kunne vært
+                    bedre med en mer konservativ åpning. Karl Magnus derimot var ikke mulig å hente inn. Han jogget inn til en ny stevnerekord og seier med tiden <strong>10:46</strong>.
+                    Man kan bare spekulere hvordan dette ville utartet seg dersom Lasse var på startstreken. For andre år på rad blir knuser Erik Håkon i en sluttspurt. De to populerte
+                    resten av pallen med tidene <strong>11:20</strong> og <strong>11:22</strong>,
+                    Dennis, Njål og Runar presterte alle med sterke tider i sin debut <strong>11:31</strong>, <strong>11:35</strong>
+                    og <strong>11:37</strong> holdt til 4., 5. og 6.plass. Sondre klarte å forbedre tiden sin fra i fjor med 10 sekunder (<strong>12:47</strong>),
+                    men er fortsatt langt under sitt potensial. Eskild fortsetter å prestere dårligere, <strong>13:37</strong> i år 36 sekunder saktere enn i fjor.
+                    Bakerst kom Marius med Elin i barnevogn på tiden <strong>14:40</strong>, 10 sekunder raskere enn tregeste person (Jens) året før. Kanskje
+                    Jens - Marius duellen kan materialiseres i 2025?
+                </p>
+                <p>
+                    <strong>1.plass: Karl Magnus Torgrimsen      10:46<br>
+                            2.plass: Erik Engebretsen            11:20<br>
+                            3.plass: Håkon André Halvorsen       11:22<br>
+                        </strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2023 -->
+    <section class="history-entry history-entry-2023">
+        <h2>2023</h2>
+        <div class="entry-content">
+            <div class="entry-image">
+                <img src="photos/legendelopet_2023.jpg" onerror="this.src='https://placehold.co/300x200/d8a700/333333?text=2023+L%C3%B8p'" alt="Bilde fra Legendeløpet 2023" />
+                <p>2023: Regjerende mester beholder pokalen</p>
+            </div>
+            <div class="entry-text">
+                <h3>Kampen mot elementene</h3>
+                <p>
+                    Året 2023 ble preget av utfordrende værforhold. Et tynt snødekke gjorde løypen litt glatt. Invitasjonen var utvidet,
+                    og det var flere legender som møtte opp. Verdt å notere at Adam møtte ikke fordi han var bakfull og/eller full. Lasse
+                    var fortsatt den store favoritten. Karl Magnus var en sterk utfordrer og Jens som ikke konkurrerer med noen, men likevel stiller opp!
+                </p>
+                <p>
+                    Undertegnede sine minner fra dette løpet er vage. Lasse og Karl Magnus dro av gårde i et tempo resten bare kan drømme om.
+                    Tydeligvis har Lasse dratt i fra og fått en astronomisk ledelse på 32 sekunder på andreplassen. Erik lå alene siste kilometeren
+                    og Håkon ga alt for å ta han igjen, bare for å bli knust i en sluttspurt.
+                </p>
+                 <p>
+                    Året var preget av dårlige prestasjoner fra flere utøvere. Erik 12 sekunder saktere, Sondre 55 sekunder saktere og Eskild 39 sekunder
+                    saktere. Hicham på en 5.plass med tiden: <strong>12:17</strong> og Jens med tiden: <strong>14:50</strong> imponerte. Hicham fordi han var
+                    raskere enn forventet og Jens fordi han møtte opp tidsnok.
+
+                </p>
+                <p>
+                    <strong>1.plass: Lasse Berg Johnsen      11:04<br>
+                            2.plass: Karl Magnus Torgrimsen  11:36<br>
+                            3.plass: Erik Engebretsen        12:05<br>
+                        </strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2022 -->
+    <section class="history-entry history-entry-2022">
+        <h2>2022</h2>
+        <div class="entry-content">
+            <div class="entry-image">
+                <img src="photos/legendelopet_2022.jpg" onerror="this.src='https://placehold.co/300x200/008080/ffffff?text=2022+Start'" alt="Bilde fra Legendeløpet 2022" />
+                <p>De 7 deltakerne i det første "offisielle" løpet</p>
+            </div>
+            <div class="entry-text">
+                <h3>Starten på en tradisjon</h3>
+                <p>
+                    Ryktene om et vennskapelig oppgjør rundt Mosvatnet hadde nådd undertegnede
+                    og jeg ønsket å delta. Det utviklet seg til at jeg "kapret" løpet, ga det et
+                    kleint navn og inviterte legender.
+                </p>
+                <p>
+                    Da startskuddet gikk var det Johannes, toppidrettsutøver og deltids-actionfigur som tok ledelsen
+                    i noe som må ha vært 3:30 tempo. Lasse, Sondre og Erik hang seg nervøst på. Adam la seg
+                    kontrolert bakerst i kjent Ingebritsen stil, mens Håkon hang seg på tempoet til Eskild.
+                </p>
+                <p>
+                    Etter rundt 1km begynte Johannes å falle bakover. Han hadde nok ikke lest løypebeskrivelsen og startet alt for hardt.
+                    Lasse tok da ledelsen som han aldri ga fra seg. Avstanden ned til Erik ble stadig større og Lasse løp inn til en kontrollert
+                    seier. Erik kjempet mot Sondre frem til siste kilometer hvor Sondre til slutt måtte godta en tredjeplass 9 sekunder bak
+                    andreplassen.
+                </p>
+                <p>
+                    Resten av gjengen kom på løpende bånd. Adam hadde åpnet rolig og plukket sjeler underveis. Han tok en overbevisende 4.plass.
+                    I kampen mellom Eskild og Håkon var det Eskild, den tidligere orienteringsløperen med sine vakre lange steg, som kom seirende ut.
+                    Johannes møtte veggen, men kjempet seg inn til en respektabel tid på <strong>12:34</strong> (4:11/km)
+                </p>
+
+
+                <p>
+                    <strong>1.plass: Lasse Berg Johnsen      11:13<br>
+                            2.plass: Erik Engebretsen        11:53<br>
+                            3.plass: Sondre Benjaminsen      12:02<br>
+                        </strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Før 2022 -->
+    <section class="history-entry history-entry-pre2022">
+        <h2>2018 - 2021</h2>
+        <div class="entry-content">
+            <div class="entry-imageVertical">
+                <img src="photos/sondre_legendelopet.jpg" onerror="this.src='https://placehold.co/300x200/555555/ffffff?text=F%C3%B8r+2022'" alt="Bilde fra tiden før 2022" />
+                <p>Bevis på tidligere prestasjoner.</p>
+            </div>
+            <div class="entry-text">
+                <h3>Røttene</h3>
+                <p>
+                    Fra denne tiden finnes det bare rykter, spekulasjoner og noen kornete screenshots fra Strava-aktiviteter.
+                    Legenden sier at Lasse og Sondre startet det hele rundt <strong>2018</strong>. Hvert år var det en duell, en kamp om hvem som var best.
+                    Lasse som holdt seg i form mens han fulgte guttedrømmen om å bli fotballproff og Sondre som stilte opp dag inn, dag ut på banen i Bournemouth,
+                    UK for å dunke ut 4x4-intervaller. År etter år møtte Sondre opp på startstreken ved kapellet på Mosvatnet. År etter år ble han knust av Lasse
+                    som aldri tok seg helt ut.
+                </p>
+                <p>
+                    Det hele kulminerte i <strong>2020</strong> da Sondre løp inn til en imponerende tid på <strong>10:36</strong> (03:32/km), men fortsatt slått av talentet fra
+                    FGI som lekte seg inn til tiden <strong>10:30</strong> (03:30/km). Selv om disse tidene ikke er inkludert på våre offisielle resultatlister,
+                    fortjener Lasse og Sondre respekt for prestasjonene og for å plante frøene som har spiret og grodd til dagens Legendeløp.
+                </p>
+                <p>
+                    Året <strong>2021</strong> vet vi ikke om løpet ble arrangert.
+                </p>
+
+            </div>
+        </div>
+    </section>
+
+  </main>
+</div>
+
+  <script>
+    // Nedtelling for Legendeløpet 2025
+    function countdown() {
+      const targetDate = new Date("2025-12-20T10:30:00");
+      const now = new Date();
+      const diff = targetDate - now;
+
+      const timerElement = document.getElementById("timer");
+
+      if (diff <= 0) {
+        timerElement.innerText = "Løpet har startet!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timerElement.innerText =
+        `${days} dager ${hours}t ${minutes}m ${seconds}s`;
+    }
+
+    setInterval(countdown, 1000);
+    countdown(); // Kjør en gang ved lasting for å unngå forsinkelse
+  </script>
+</body>
+</html>
