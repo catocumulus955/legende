@@ -207,7 +207,7 @@
 			border-color: #ffdb58;
 			box-shadow: 0 0 0 3px rgba(255, 219, 88, 0.4);
 		}
-		
+
     </style>
 </head>
 
@@ -235,7 +235,7 @@
             <button class="btn" data-year="2023">2023</button>
             <button class="btn" data-year="2024">2024</button>
         </div>
-		
+
 		<div class="search-container">
 			<input type="text" id="searchInput" placeholder="Søk etter navn..." oninput="searchNames()">
 		</div>
@@ -264,10 +264,10 @@
 	        appId: "1:982148824748:web:878a9fb9d58f93d564a909",
 	        measurementId: "G-QMF0EKMT47"
 	    };
-	
+
 	    firebase.initializeApp(firebaseConfig);
 	    const db = firebase.firestore();
-	
+
 	    // 2. Utility Functions
 	    function calculatePace(time) {
 	        const [min, sec] = time.split(":").map(Number);
@@ -277,24 +277,24 @@
 	        const paceSec = Math.round(pace % 60);
 	        return `${paceMin}:${paceSec.toString().padStart(2, '0')}`;
 	    }
-	
+
 	    function timeToSeconds(time) {
 	        const [min, sec] = time.split(":").map(Number);
 	        return min * 60 + sec;
 	    }
-	
+
 	    function secondsToTime(totalSeconds) {
 	        const min = Math.floor(totalSeconds / 60);
 	        const sec = Math.round(totalSeconds % 60);
 	        return `${min}:${sec.toString().padStart(2, '0')}`;
 	    }
-	
+
 	    // 3. Main Display Function
 	    function showTab(year, data, searchTerm = "") {
 	        const container = document.getElementById("results");
 	        container.innerHTML = "";
 	        const searchInput = document.getElementById("searchInput");
-	
+
 	        // Hide search bar if not on "Alle tider" tab
 	        if (year === "all") {
 	            searchInput.style.display = "block";
@@ -302,19 +302,19 @@
 	        } else {
 	            searchInput.style.display = "none";
 	        }
-	
-	
+
+
 	        const chartContainer = document.getElementById("chart-container");
 	        chartContainer.classList.add("hidden");
 	        chartContainer.style.display = "none";
-	
+
 	        const existingBackBtn = document.getElementById("back-btn");
 	        if (existingBackBtn) {
 	            existingBackBtn.remove();
 	        }
-	
+
 	        let filtered;
-	
+
 	        if (year === "all") {
 	            filtered = [...data]
 	                .filter(r => typeof r.allRank === "number")
@@ -324,7 +324,7 @@
 	                const lowerCaseSearchTerm = searchTerm.toLowerCase();
 	                filtered = filtered.filter(r => r.name.toLowerCase().includes(lowerCaseSearchTerm));
 	            }
-	
+
 	        } else {
 	            const yearNum = parseInt(year);
 	            filtered = data
@@ -335,30 +335,30 @@
 	                    pace: calculatePace(r.time_display),
 	                    rank: i + 1
 	                }));
-	
+
 	            // 1. Find the winner's time (in seconds)
 	            const winnerTimeInSeconds = timeToSeconds(filtered[0].time_display);
-	
+
 	            // 2. Calculate the difference for each runner
 	            filtered = filtered.map(r => ({
 	                ...r,
 	                behindWinner: timeToSeconds(r.time_display) - winnerTimeInSeconds
 	            }));
 	        }
-	
+
 	        if (filtered.length === 0) {
 	            container.innerHTML = "<p>Ingen resultater funnet for dette året.</p>";
 	            return;
 	        }
-	
+
 	        const headers = year === "all"
 	            ? ["Plassering (All Time)", "Navn", "Tid", "Fart", "År", "Plassering det året"]
 	            : ["Plassering", "Navn", "Tid", "Fart", "Bak"]; // 3. Add "Bak" header
-	
+
 	        const table = document.createElement("table");
 	        const thead = document.createElement("thead");
 	        const tbody = document.createElement("tbody");
-	
+
 	        const headerRow = document.createElement("tr");
 	        headers.forEach(h => {
 	            const th = document.createElement("th");
@@ -366,13 +366,13 @@
 	            headerRow.appendChild(th);
 	        });
 	        thead.appendChild(headerRow);
-	
+
 	        filtered.forEach(r => {
 	            const row = document.createElement("tr");
 	            const cells = year === "all"
 	                ? [r.allRank, r.name, r.time_display, r.pace, r.year, r.rank]
 	                : [r.rank, r.name, r.time_display, r.pace, secondsToTime(r.behindWinner)]; // 3. Add "behindWinner" value
-	
+
 	            cells.forEach((c, i) => {
 	                const td = document.createElement("td");
 	                if (headers[i] === "Navn" && r.athlete_id) {
@@ -384,26 +384,26 @@
 	                }
 	                row.appendChild(td);
 	            });
-	
+
 	            tbody.appendChild(row);
 	        });
-	
+
 	        table.appendChild(thead);
 	        table.appendChild(tbody);
 	        container.appendChild(table);
 	    }
-	
+
 	    // 4. Charting Logic
 	    let myChart;
-	
+
 	    function renderChart(athleteName, years, times, trendlinePoints) {
 	        const ctx = document.getElementById('athleteTimeChart');
 	        document.getElementById('chart-title').innerText = `${athleteName}s resultater over tid`;
-	
+
 	        if (myChart) {
 	            myChart.destroy();
 	        }
-	
+
 	        myChart = new Chart(ctx, {
 	            type: 'line',
 	            data: {
@@ -480,7 +480,7 @@
 	            },
 	        });
 	    }
-	
+
 	    // Linear regression function to calculate the trendline
 	    function linreg(x, y) {
 	        const n = x.length;
@@ -488,43 +488,43 @@
 	        let sum_y = 0;
 	        let sum_xy = 0;
 	        let sum_xx = 0;
-	
+
 	        for (let i = 0; i < n; i++) {
 	            sum_x += x[i];
 	            sum_y += y[i];
 	            sum_xy += (x[i] * y[i]);
 	            sum_xx += (x[i] * x[i]);
 	        }
-	
+
 	        const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
 	        const intercept = (sum_y - slope * sum_x) / n;
 	        return { slope, intercept };
 	    }
-	
+
 	    // 5. Fetch Data from Firestore and Show Initial Table
 	    let allResults = [];
-	
+
 	    db.collection("results").get()
 	        .then(snapshot => {
 	            snapshot.forEach(doc => {
 	                allResults.push(doc.data());
 	            });
-	
+
 	            const sortedAll = [...allResults]
 	                .sort((a, b) => timeToSeconds(a.time_display) - timeToSeconds(b.time_display));
-	
+
 	            sortedAll.forEach((r, i) => {
 	                r.allRank = i + 1;
 	                r.pace = calculatePace(r.time_display);
 	            });
-	
+
 	            showTab("all", allResults); // Show the initial table without a chart
 	        })
 	        .catch(error => {
 	            console.error("Firestore fetch error:", error);
 	            document.getElementById("results").innerHTML = "<p>Kunne ikke hente resultater.</p>";
 	        });
-	
+
 	    // 6. Wire Up Buttons
 	    document.querySelectorAll("button.btn").forEach(btn => {
 	        btn.addEventListener("click", () => {
@@ -532,46 +532,46 @@
 	            showTab(year, allResults);
 	        });
 	    });
-		
+
 		// NEW: Move this function to the global scope
 	    function searchNames() {
 	        const searchTerm = document.getElementById("searchInput").value;
 	        showTab("all", allResults, searchTerm);
 	    }
-	
+
 	    // 7. Show Athlete's Chart and Data
 	    function showAthleteResults(id) {
 	        const container = document.getElementById("results");
 	        container.innerHTML = ""; // Clear existing table
 	        document.getElementById("chart-container").classList.remove("hidden");
 	        document.getElementById("chart-container").style.display = "block";
-	
+
 	        const athleteResults = allResults
 	            .filter(r => r.athlete_id === id)
 	            .sort((a, b) => a.year - b.year);
-	
+
 	        if (athleteResults.length === 0) {
 	            alert("No results found for this athlete.");
 	            return;
 	        }
-			
+
 	        // Create a back button
 	        const backBtn = document.createElement("button");
 	        backBtn.innerText = "← Tilbake til alle resultater";
 	        backBtn.classList.add("btn");
 	        backBtn.id = "back-btn";
 	        backBtn.addEventListener("click", () => showTab("all", allResults));
-	
+
 	        // Append the back button to the buttons container
 	        document.querySelector(".buttons").appendChild(backBtn);
-	
+
 	        const athleteName = athleteResults[0].name;
-	
+
 	        // Create and populate the new table for the specific athlete
 	        const table = document.createElement("table");
 	        const thead = document.createElement("thead");
 	        const tbody = document.createElement("tbody");
-	
+
 	        const headers = ["År", "Tid", "Fart", "Plassering det året"];
 	        const headerRow = document.createElement("tr");
 	        headers.forEach(h => {
@@ -580,7 +580,7 @@
 	            headerRow.appendChild(th);
 	        });
 	        thead.appendChild(headerRow);
-	
+
 	        athleteResults.forEach(r => {
 	            const row = document.createElement("tr");
 	            const cells = [r.year, r.time_display, r.pace, r.rank];
@@ -591,25 +591,24 @@
 	            });
 	            tbody.appendChild(row);
 	        });
-	
+
 	        table.appendChild(thead);
 	        table.appendChild(tbody);
 	        container.appendChild(table);
-	
+
 	        // Chart data
 	        const years = athleteResults.map(r => r.year);
 	        const times = athleteResults.map(r => timeToSeconds(r.time_display));
-	
+
 	        // Calculate trendline
 	        const { slope, intercept } = linreg(years, times);
 	        const trendlinePoints = years.map(year => slope * year + intercept);
-	
+
 	        renderChart(athleteName, years, times, trendlinePoints);
 	    }
     </script>
 </body>
 </html>
-
 
 
 
