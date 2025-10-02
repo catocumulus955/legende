@@ -5,84 +5,88 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMF0EKMT47"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-  
     gtag('config', 'G-QMF0EKMT47');
   </script>
-  
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legendeløpet 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Legendeløpet Historikk</title>
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+
   <style>
+    :root {
+      --container-max: 1000px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    img { max-width: 100%; height: auto; display: block; cursor: zoom-in; }
+
     body {
       margin: 0;
       font-family: 'Lato', sans-serif;
       background: #f9f9f9;
       color: #333;
+      line-height: 1.5;
     }
 
-  main {
-  margin-top: 2rem;
-  }
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
 
+    main { margin-top: 2rem; }
+
+    /* Banner */
     .banner {
       background-color: #ffdb58;
-      padding: 1rem 2rem;
+      padding: 1rem 0;
       position: static;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     .banner-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      gap: 0.5rem 1rem;
       text-align: center;
     }
 
-    .banner-left {
-      flex: 1;
-      text-align: left;
+    .banner-left, .banner-center, .banner-right {
+      flex: 1 1 200px;
       min-width: 200px;
     }
-
-    .banner-center {
-      flex: 1;
-      text-align: center;
-      min-width: 200px;
-    }
-
+    .banner-left { text-align: left; }
+    .banner-center { text-align: center; }
     .banner-right {
-      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       justify-content: center;
-      text-align: right;
       gap: 0.5rem;
-      min-width: 200px;
+      text-align: right;
     }
 
-    .event-date,
-    .event-location {
+    .event-date, .event-location {
       font-size: 1rem;
       margin: 0.2rem 0;
       font-weight: 400;
       color: #444;
     }
-
     .banner-center h1 {
-      font-size: 2.5rem;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       margin: 0;
       font-weight: 800;
       color: #222;
     }
-
+    .banner-center p { margin: 0.2rem 0 0 0; }
     #timer {
-      font-size: 1.2rem;
-      font-weight: bold;
+      font-size: 1.1rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
       color: #333;
     }
@@ -92,249 +96,290 @@
       color: white;
       padding: 0.6rem 1rem;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
     }
+    .btn:hover { background-color: #555; }
 
-    .btn:hover {
-      background-color: #555;
-    }
-
-    @media (max-width: 600px) {
-      .banner-inner {
-        flex-direction: column;
+    @media (max-width: 768px) {
+      .banner-inner { flex-direction: column; text-align: center; }
+      .banner-left, .banner-center, .banner-right {
         align-items: center;
+        min-width: 100%;
+        margin-bottom: 0.25rem;
         text-align: center;
       }
-
-      .banner-left,
-      .banner-center,
-      .banner-right {
-        text-align: center;
-        align-items: center;
-      }
-
-      .banner-right {
-        align-items: center;
-      }
+      .banner-right { align-items: center; }
     }
 
-    .info {
-      text-align: left;
-      padding: 4rem 2rem;
-      background-color: #fcf9e7; /* Light yellow background */
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-    .info h2 {
-      color: #af8d00; /* Darker yellow for the text */
-      font-size: 2.5rem;
-      margin-bottom: 1rem; /* Adds space below the heading */
-    }
-
-    .info img {
-      width: 600px;
-      max-width: 90%;
-      height: auto;
-      margin-top: 1rem;
+    /* History Entries */
+    .history-entry {
+      padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
       margin-bottom: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Legg til skygge */
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.25s ease-in-out;
+      background: #fff;
+    }
+    .history-entry:hover { transform: translateY(-3px); }
+
+    .history-entry h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      margin: 0 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid;
     }
 
-    .info-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
+    /* Box color themes */
+    .redBackground { background-color: #ffccb; border: 1px solid #dc3545; opacity: 0.6; }
+    .redBackground h2 { border-color: #dc3545; color: ##dc3545; }
+
+    .pinkBackground { background-color: #f7f3f3; border: 1px solid #c3b1d7; }
+    .pinkBackground h2 { border-color: #6a1b9a; color: #6a1b9a; }
+
+    .yellowBackground { background-color: #fff9e6; border: 1px solid #e0c88a; }
+    .yellowBackground h2 { border-color: #d8a700; color: #d8a700; }
+
+    .greenBackground { background-color: #e6f9f9; border: 1px solid #a8c8c8; }
+    .greenBackground h2 { border-color: #008080; color: #008080; }
+
+    .grayBackground { background-color: #f0f0f0; border: 1px solid #ccc; }
+    .grayBackground h2 { border-color: #555; color: #555; }
+
+    /* Entry content layout */
+    .entry-content { display: block; }
+    .entry-content::after { content: ""; display: table; clear: both; }
+
+    .entry-image, .entry-imageVertical {
+      text-align: center;
+      margin-bottom: 1rem;
     }
+    .entry-image img {
+      width: 100%;
+      max-width: 520px;
+      aspect-ratio: 350 / 230;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      margin-inline: auto;
+    }
+    .entry-image p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .entry-imageVertical img {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 280 / 380;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      margin-inline: auto;
+    }
+
+    .entry-text { line-height: 1.7; font-size: 1.02rem; }
+
     @media (min-width: 768px) {
-      .info-content {
-        flex-direction: row;
+      /* Float images on larger screens, text wraps nicely */
+      .entry-image, .entry-imageVertical {
+        float: left;
+        margin: 0 2rem 1rem 0;
       }
     }
-    .info-text {
-      border-left: 3px solid #af8d00;
-      padding-left: 1rem;
+
+    /* LIGHTBOX overlay */
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: none;           /* toggled to flex */
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: zoom-out;        /* indicates click to close */
+      padding: 2vh 2vw;
+    }
+    .lightbox-backdrop.is-open { display: flex; }
+
+    .lightbox-content {
+      max-width: 96vw;
+      max-height: 96vh;
+      width: auto;
+      height: auto;
+      display: block;
+      object-fit: contain;     /* Fit within screen, preserve aspect ratio */
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      border-radius: 8px;
+      pointer-events: none;    /* clicking the image still closes the overlay */
     }
 
-  .container {
-    max-width: 1500px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-
-  /* Champion section styling */
-.champion-section {
-  margin-top: 2rem;
-  padding: 4rem 2rem;
-  text-align: center;
-  background-color: #e8f5e9; /* Light green background to stand out */
-}
-
-.champion-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .champion-container {
-    flex-direction: row;
-    text-align: left;
-  }
-
-  .champion-details {
-    flex: 1;
-  }
-}
-
-.champion-photo img {
-  width: 250px;
-  height: 350px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.champion-details h2 {
-  font-family: 'Lato', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: #2e7d32; /* A dark green for a fresh look */
-  margin: 0;
-  line-height: 1.2;
-}
-
-.champion-name {
-  font-family: 'Lato', sans-serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0.5rem 0 1rem 0;
-}
-
-.champion-stats {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #555;
-  margin: 0;
-}
-
-.champion-stats strong {
-  color: #000;
-  font-weight: 900;
-}
-
-.champion-description {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #666;
-  margin-top: 1rem;
-  border-left: 3px solid #66bb6a; /* A decorative left border */
-  padding-left: 1rem;
-}
-
+    /* Reduce padding on tiny devices */
+    @media (max-width: 380px) {
+      .history-entry { padding: 1.1rem; }
+      .btn { width: 100%; text-align: center; }
+    }
   </style>
+
+
 </head>
 <body>
   <div class="banner">
     <div class="container">
-    <div class="banner-inner">
+      <div class="banner-inner">
+        <div class="banner-left">
+          <div id="timer"></div>
+          <p class="event-date">Lørdag 20. Desember</p>
+          <p class="event-location">Mosvatnet 10:30</p>
+        </div>
 
-      <div class="banner-left">
-      <div id="timer"></div>
-      <p class="event-date">Lørdag 20. Desember</p>
-      <p class="event-location">Mosvatnet 10:30</p>
-      </div>
+        <div class="banner-center">
+          <h1>Legendeløpet 2025</h1>
+          <p>Et veldig seriøst lavterskelløp</p>
+        </div>
 
-      <div class="banner-center">
-      <h1>Legendeløpet 2025</h1>
-      <p>Et veldig seriøst lavterskelløp.</p>
-      </div>
+        <div class="banner-right">
+          <a href="results.html" class="btn">Resultater</a>
+          <a href="https://signup.eqtiming.com/?Event=legendelopet&lang=norwegian" class="btn">Påmelding</a>
+          <a href="history.html" class="btn">Historie</a>
 
-      <div class="banner-right">
-      <a href="https://signup.eqtiming.com/?Event=legendelopet&lang=norwegian" class="btn">Påmelding</a>
-      <a href="results.html" class="btn">Resultater</a>
-      <a href="history.html" class="btn">Historie</a>
-      </div>
-    </div>
-    </div>
-  </div>
-<div class="container">
-  <main>
-    <section class="info">
-      <h2>Om løpet</h2>
-      <div class="info-content">
-        <img src="last_year.JPEG" alt="Legendeløpet 2024" />
-        <div class="info-text">
-          <p>
-          Legendeløpet blir arrangert "offisielt" for fjerde år på rad.
-          </p>
-          <p>Én runde rundt Mosvatnet (3041 meter), mot klokken, start fra kapellet.
-          </p>  
         </div>
       </div>
-</section>
-
-      <section class="champion-section">
-  <div class="champion-container">
-    <div class="champion-photo">
-      <img src="champion.JPG" alt="Karl Magnus Torgrimsen" />
-    </div>
-    <div class="champion-details">
-      <h2>Regjerende mester</h2>
-      <p class="champion-name">Karl Magnus Torgrimsen</p>
-      <p class="champion-stats">
-        Tid: <strong>10:46</strong><br>
-        Fart: <strong>3:35/km</strong>
-      </p>
-      <div class="champion-description">
-        <p>
-          I 2024 tok Karli en overbevisende seier og satt ny stevnerekord. Han har satt en ny PR på 5k (18:31) som tilsier at han hadde vunnet dersom han løp 5km tempoet sitt. Tiden vil vise om resten av gutta har trent nok til å gi pokalen en ny og verdig eier
-        </p>
-      </div>
     </div>
   </div>
-    </section>
-  </main>
-</div>
+
+  <div class="container">
+    <main>
+      <!-- 2024 -->
+      <section class="history-entry pinkBackground">
+        <h2>Legendeløpet 2025</h2>
+        <div class="entry-content">
+          <div class="entry-image">
+            <img src="photos/legendelopet_2024.jpg"
+                 onerror="this.src='https://placehold.co/300x200/6a1b9a/ffffff?text=2024+Vinner'"
+                 alt="deltakerne fra 2024" />
+            <p>Legendene som møtte til start i 2024.</p>
+          </div>
+          <div class="entry-text">
+            <h3>2025 info</h3>
+            <li>
+              Påmeldingen er nå åpnet for årets arrangement! I år blir det skikkelig tidtaking, noe som også
+              medfører en liten påmeldingsavgift slik at jeg ikke må melde konkurs. Kommunen har gitt oss
+              tillatelse til å ha opp til 30 påmeldte.
+            </li>
+            <li>
+              Start er fortsatt ved kapellet og vi løper sammer runde som i fjor. 3041 meter mot klokken
+              rundt Mosvatnet.
+            </li>
+            <li>
+              <strong>
+              Oppmøte 10:00, startskuddet går 10:30 Sharp!!
+              </strong>
+              Vi trenger litt tid før start for å levere ut og feste startnummer.
+            </li>
+            <li>
+              Send meg en melding så får du rabattkode til påmelding ;)
+            </li>
+          </div>
+        </div>
+      </section>
+
+      <!-- Regherende mester -->
+      <section class="history-entry greenBackground">
+        <h2>Regjerende mester</h2>
+        <div class="entry-content">
+          <div class="entry-imageVertical">
+            <img src="photos/karlmagnustorgrimsen.jpg"
+                 onerror="this.src='https://placehold.co/300x200/008080/ffffff?text=2022+Start'"
+                 alt="Karli på stavanger5K" />
+            <p>Spurter inn til ny pers i STVG5K: 18:31</p>
+          </div>
+          <div class="entry-text">
+            <h3 style="font-size: 2rem;"
+            >Karl Magnus Torgrimsen</h3>
+            <p>Tid:<strong> 10:46</strong> <br>
+              Fart: <strong> 3:35/km</strong></p>
+            <p>
+            <p>
+              I 2024 tok Karli en overbevisende seier og satt ny stevnerekord.
+              Han har satt en ny PR på 5k (18:31) som tilsier at han hadde vunnet
+              dersom han løp 5km tempoet sitt.
+              Tiden vil vise om resten av gutta har trent
+              nok til å gi pokalen en ny og verdig eier
+            </p>
+          </div>
+        </div>
+      </section>
+
+  <!-- LIGHTBOX markup -->
+  <div class="lightbox-backdrop" id="lightbox" aria-hidden="true">
+    <img class="lightbox-content" id="lightbox-img" alt="Forstørret bilde" />
+  </div>
 
   <script>
-    function countdown() {
+    // Nedtelling for Legendeløpet 2025
+    (function countdownInit(){
       const targetDate = new Date("2025-12-20T10:30:00");
-      const now = new Date();
-      const diff = targetDate - now;
+      const timerElement = document.getElementById("timer");
+      function tick() {
+        const now = new Date();
+        const diff = targetDate - now;
+        if (diff <= 0) {
+          timerElement.textContent = "Løpet har startet!";
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        timerElement.textContent = `${days} dager ${hours}t ${minutes}m ${seconds}s`;
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
 
-      if (diff <= 0) {
-        document.getElementById("timer").innerText = "Løpet har startet!";
-        return;
+    // Lightweight Lightbox: applies to ALL images
+    (function lightboxInit(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+
+      function openLightbox(src, alt) {
+        lbImg.src = src;
+        lbImg.alt = alt || 'Forstørret bilde';
+        lb.classList.add('is-open');
+        lb.setAttribute('aria-hidden', 'false');
+        document.documentElement.style.overflow = 'hidden'; // Prevent background scroll
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      function closeLightbox() {
+        lb.classList.remove('is-open');
+        lb.setAttribute('aria-hidden', 'true');
+        lbImg.removeAttribute('src');
+        document.documentElement.style.overflow = '';
+      }
 
-      document.getElementById("timer").innerText =
-        `${days} dager ${hours}t ${minutes}m ${seconds}s`;
-    }
+      // Click ANYWHERE to close
+      lb.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
 
-    setInterval(countdown, 1000);
+      // Delegate clicks to all <img>
+      document.addEventListener('click', (e) => {
+        const t = e.target;
+        if (t && t.tagName === 'IMG' && !lb.contains(t)) {
+          // If image has srcset/sizes, prefer currentSrc
+          const src = t.currentSrc || t.src;
+          openLightbox(src, t.alt || '');
+        }
+      }, true);
+    })();
   </script>
 </body>
-
 </html>
-
-
-
-
-
-
 
 
