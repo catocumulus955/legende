@@ -130,14 +130,14 @@ main {
 .history-entry {
   padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
   margin-bottom: 2rem;
-  border-radius: 12px;
+  /* border-radius: 12px; */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease-in-out;
+  /* transition: transform 0.25s ease-in-out; */
   background: #fff;
 }
-.history-entry:hover {
+/* .history-entry:hover {
   transform: translateY(-3px);
-}
+} */
 
 .history-entry h2 {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
