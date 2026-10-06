@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
   --container-max: 1000px;
 }
@@ -286,3 +287,293 @@ main {
     text-align: center;
   }
 }
+=======
+:root {
+  --container-max: 1000px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  cursor: zoom-in;
+}
+
+body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+main {
+  margin-top: 2rem;
+}
+
+/* Banner */
+.banner {
+  background-color: #ffdb58;
+  padding: 1rem 0;
+  position: static;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.banner-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  text-align: center;
+}
+
+.banner-left,
+.banner-center,
+.banner-right {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+.banner-left {
+  text-align: left;
+}
+.banner-center {
+  text-align: center;
+}
+.banner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.event-date,
+.event-location {
+  font-size: 1rem;
+  margin: 0.2rem 0;
+  font-weight: 400;
+  color: #444;
+}
+.banner-center h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin: 0;
+  font-weight: 800;
+  color: #222;
+}
+.banner-center p {
+  margin: 0.2rem 0 0 0;
+}
+#timer {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.btn {
+  background-color: #333;
+  color: white;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+.btn:hover {
+  background-color: #555;
+}
+
+@media (max-width: 768px) {
+  .banner-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .banner-left,
+  .banner-center,
+  .banner-right {
+    align-items: center;
+    min-width: 100%;
+    margin-bottom: 0.25rem;
+    text-align: center;
+  }
+  .banner-right {
+    align-items: center;
+  }
+}
+
+/* History Entries */
+.history-entry {
+  padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease-in-out;
+  background: #fff;
+}
+.history-entry:hover {
+  transform: translateY(-3px);
+}
+
+.history-entry h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid;
+}
+
+/* Box color themes */
+.redBackground {
+  background-color: #ffccb;
+  border: 1px solid #dc3545;
+  opacity: 0.6;
+}
+.redBackground h2 {
+  border-color: #dc3545;
+  color: ##dc3545;
+}
+
+.pinkBackground {
+  background-color: #f7f3f3;
+  border: 1px solid #c3b1d7;
+}
+.pinkBackground h2 {
+  border-color: #6a1b9a;
+  color: #6a1b9a;
+}
+
+.yellowBackground {
+  background-color: #fff9e6;
+  border: 1px solid #e0c88a;
+}
+.yellowBackground h2 {
+  border-color: #d8a700;
+  color: #d8a700;
+}
+
+.greenBackground {
+  background-color: #e6f9f9;
+  border: 1px solid #a8c8c8;
+}
+.greenBackground h2 {
+  border-color: #008080;
+  color: #008080;
+}
+
+.grayBackground {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
+.grayBackground h2 {
+  border-color: #555;
+  color: #555;
+}
+
+/* Entry content layout */
+.entry-content {
+  display: block;
+}
+.entry-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.entry-image,
+.entry-imageVertical {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.entry-image img {
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 350 / 230;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-inline: auto;
+}
+.entry-image p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.entry-imageVertical img {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 280 / 380;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-inline: auto;
+}
+
+.entry-text {
+  line-height: 1.7;
+  font-size: 1.02rem;
+}
+
+@media (min-width: 768px) {
+  /* Float images on larger screens, text wraps nicely */
+  .entry-image,
+  .entry-imageVertical {
+    float: left;
+    margin: 0 2rem 1rem 0;
+  }
+}
+
+/* LIGHTBOX overlay */
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none; /* toggled to flex */
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out; /* indicates click to close */
+  padding: 2vh 2vw;
+}
+.lightbox-backdrop.is-open {
+  display: flex;
+}
+
+.lightbox-content {
+  max-width: 96vw;
+  max-height: 96vh;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain; /* Fit within screen, preserve aspect ratio */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  pointer-events: none; /* clicking the image still closes the overlay */
+}
+
+/* Reduce padding on tiny devices */
+@media (max-width: 380px) {
+  .history-entry {
+    padding: 1.1rem;
+  }
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+>>>>>>> a3577755ea612a3f622e0ab637397628f3bf611d
