@@ -130,6 +130,30 @@ main {
   }
 }
 
+/* Info section */
+.info-section {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #ffcc00;
+}
+
+.info-grid {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+.info-card {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-left: 4px solid #008080;
+}
+.info-card h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
 /* History Entries */
 .history-entry {
   padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
@@ -212,7 +236,6 @@ main {
   max-width: 520px;
   aspect-ratio: 350 / 230;
   object-fit: cover;
-  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   margin-inline: auto;
 }
@@ -227,9 +250,11 @@ main {
   max-width: 320px;
   aspect-ratio: 280 / 380;
   object-fit: cover;
-  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   margin-inline: auto;
+}
+
+.entry-image {
 }
 
 .entry-text {
