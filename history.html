@@ -1,478 +1,255 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="no">
-<head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMF0EKMT47"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-QMF0EKMT47');
-  </script>
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-QMF0EKMT47"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-QMF0EKMT47");
+    </script>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Legendeløpet Historikk</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Legendeløpet Historikk</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
 
-  <style>
-    :root {
-      --container-max: 1000px;
-    }
+    <style>
+      :root {
+        --container-max: 1000px;
+      }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    img { max-width: 100%; height: auto; display: block; cursor: zoom-in; }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
 
-    body {
-      margin: 0;
-      font-family: 'Lato', sans-serif;
-      background: #f9f9f9;
-      color: #333;
-      line-height: 1.5;
-    }
+      /* Box color themes */
+      .redBackground {
+        background-color: #ffccb;
+        border: 1px solid #dc3545;
+      }
+      .redBackground h2 {
+        border-color: #dc3545;
+        color: ##dc3545;
+      }
 
-    .container {
-      max-width: var(--container-max);
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
+      .pinkBackground {
+        background-color: #f7f3f3;
+        border: 1px solid #c3b1d7;
+      }
+      .pinkBackground h2 {
+        border-color: #6a1b9a;
+        color: #6a1b9a;
+      }
 
-    main { margin-top: 2rem; }
+      .yellowBackground {
+        background-color: #fff9e6;
+        border: 1px solid #e0c88a;
+      }
+      .yellowBackground h2 {
+        border-color: #d8a700;
+        color: #d8a700;
+      }
 
-    /* Banner */
-    .banner {
-      background-color: #ffdb58;
-      padding: 1rem 0;
-      position: static;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .banner-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem 1rem;
-      text-align: center;
-    }
+      .greenBackground {
+        background-color: #e6f9f9;
+        border: 1px solid #a8c8c8;
+      }
+      .greenBackground h2 {
+        border-color: #008080;
+        color: #008080;
+      }
 
-    .banner-left, .banner-center, .banner-right {
-      flex: 1 1 200px;
-      min-width: 200px;
-    }
-    .banner-left { text-align: left; }
-    .banner-center { text-align: center; }
-    .banner-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 0.5rem;
-      text-align: right;
-    }
+      /* Entry content layout */
+      .entry-content {
+        display: block;
+      }
+      .entry-content::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
 
-    .event-date, .event-location {
-      font-size: 1rem;
-      margin: 0.2rem 0;
-      font-weight: 400;
-      color: #444;
-    }
-    .banner-center h1 {
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      margin: 0;
-      font-weight: 800;
-      color: #222;
-    }
-    .banner-center p { margin: 0.2rem 0 0 0; }
-    #timer {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: #333;
-    }
-
-    .btn {
-      background-color: #333;
-      color: white;
-      padding: 0.6rem 1rem;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: background-color 0.2s ease;
-      white-space: nowrap;
-    }
-    .btn:hover { background-color: #555; }
-
-    @media (max-width: 768px) {
-      .banner-inner { flex-direction: column; text-align: center; }
-      .banner-left, .banner-center, .banner-right {
-        align-items: center;
-        min-width: 100%;
-        margin-bottom: 0.25rem;
+      .entry-image,
+      .entry-imageVertical {
         text-align: center;
+        margin-bottom: 1rem;
       }
-      .banner-right { align-items: center; }
-    }
-
-    /* History Entries */
-    .history-entry {
-      padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
-      margin-bottom: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transition: transform 0.25s ease-in-out;
-      background: #fff;
-    }
-    .history-entry:hover { transform: translateY(-3px); }
-
-    .history-entry h2 {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 800;
-      margin: 0 0 1rem 0;
-      padding-bottom: 0.5rem;
-      border-bottom: 3px solid;
-    }
-
-    /* Box color themes */
-    .redBackground { background-color: #ffccb; border: 1px solid #dc3545;}
-    .redBackground h2 { border-color: #dc3545; color: ##dc3545; }
-
-    .pinkBackground { background-color: #f7f3f3; border: 1px solid #c3b1d7; }
-    .pinkBackground h2 { border-color: #6a1b9a; color: #6a1b9a; }
-
-    .yellowBackground { background-color: #fff9e6; border: 1px solid #e0c88a; }
-    .yellowBackground h2 { border-color: #d8a700; color: #d8a700; }
-
-    .greenBackground { background-color: #e6f9f9; border: 1px solid #a8c8c8; }
-    .greenBackground h2 { border-color: #008080; color: #008080; }
-
-    .grayBackground { background-color: #f0f0f0; border: 1px solid #ccc; }
-    .grayBackground h2 { border-color: #555; color: #555; }
-
-
-    /* Entry content layout */
-    .entry-content { display: block; }
-    .entry-content::after { content: ""; display: table; clear: both; }
-
-    .entry-image, .entry-imageVertical {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .entry-image img {
-      width: 100%;
-      max-width: 520px;
-      aspect-ratio: 350 / 230;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      margin-inline: auto;
-    }
-    .entry-image p {
-      font-size: 0.9rem;
-      color: #666;
-      margin-top: 0.5rem;
-    }
-
-    .entry-imageVertical img {
-      width: 100%;
-      max-width: 320px;
-      aspect-ratio: 280 / 380;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      margin-inline: auto;
-    }
-
-    .entry-text { line-height: 1.7; font-size: 1.02rem; }
-
-    @media (min-width: 768px) {
-      /* Float images on larger screens, text wraps nicely */
-      .entry-image, .entry-imageVertical {
-        float: left;
-        margin: 0 2rem 1rem 0;
+      .entry-image img {
+        width: 100%;
+        max-width: 520px;
+        aspect-ratio: 350 / 230;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-inline: auto;
       }
-    }
+      .entry-image p {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 0.5rem;
+      }
 
-    /* LIGHTBOX overlay */
-    .lightbox-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.92);
-      display: none;           /* toggled to flex */
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      cursor: zoom-out;        /* indicates click to close */
-      padding: 2vh 2vw;
-    }
-    .lightbox-backdrop.is-open { display: flex; }
+      .entry-imageVertical img {
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 280 / 380;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-inline: auto;
+      }
 
-    .lightbox-content {
-      max-width: 96vw;
-      max-height: 96vh;
-      width: auto;
-      height: auto;
-      display: block;
-      object-fit: contain;     /* Fit within screen, preserve aspect ratio */
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-      border-radius: 8px;
-      pointer-events: none;    /* clicking the image still closes the overlay */
-    }
+      @media (min-width: 768px) {
+        /* Float images on larger screens, text wraps nicely */
+        .entry-image,
+        .entry-imageVertical {
+          float: left;
+          margin: 0 2rem 1rem 0;
+        }
+      }
 
-    /* Reduce padding on tiny devices */
-    @media (max-width: 380px) {
-      .history-entry { padding: 1.1rem; }
-      .btn { width: 100%; text-align: center; }
-    }
-  </style>
+      /* LIGHTBOX overlay */
+      .lightbox-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.92);
+        display: none; /* toggled to flex */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        cursor: zoom-out; /* indicates click to close */
+        padding: 2vh 2vw;
+      }
+      .lightbox-backdrop.is-open {
+        display: flex;
+      }
 
+      .lightbox-content {
+        max-width: 96vw;
+        max-height: 96vh;
+        width: auto;
+        height: auto;
+        display: block;
+        object-fit: contain; /* Fit within screen, preserve aspect ratio */
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+        pointer-events: none; /* clicking the image still closes the overlay */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      <div class="container">
+        <div class="banner-inner">
+          <div class="banner-left">
+            <div id="timer"></div>
+            <p class="event-date">Lørdag 20. Desember</p>
+            <p class="event-location">Mosvatnet 10:30</p>
+          </div>
 
-</head>
-<body>
-  <div class="banner">
-    <div class="container">
-      <div class="banner-inner">
-        <div class="banner-left">
-          <div id="timer"></div>
-          <p class="event-date">Lørdag 20. Desember</p>
-          <p class="event-location">Mosvatnet 10:30</p>
-        </div>
+          <div class="banner-center">
+            <h1>Legendeløpet 2025</h1>
+            <p>Historie</p>
+          </div>
 
-        <div class="banner-center">
-          <h1>Legendeløpet 2025</h1>
-          <p>Historie</p>
-        </div>
-
-        <div class="banner-right">
-          <a href="results.html" class="btn">Resultater</a>
-          <a href="index.html" class="btn">← Tilbake til forsiden</a>
+          <div class="banner-right">
+            <a href="results.html" class="btn">Resultater</a>
+            <a href="index.html" class="btn">← Tilbake til forsiden</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="container">
-    <main>
-      <!-- 2024 -->
-      <section class="history-entry pinkBackground">
-        <h2>2024</h2>
-        <div class="entry-content">
-          <div class="entry-image">
-            <img src="photos/legendelopet_2024.jpg"
-                 onerror="this.src='https://placehold.co/300x200/6a1b9a/ffffff?text=2024+Vinner'"
-                 alt="deltakerne fra 2024" />
-            <p>2024: Voksende deltakelse.</p>
-          </div>
-          <div class="entry-text">
-            <h3>Ny stevnerekord</h3>
-            <p>
-              Året 2024 begynner det å ta seg opp. Flere inviterte, mange treningstimer lagt ned (for noen) og generelt gode tider på folk.
-              Dette året var det også urovekkende stor DNS-liste. Hele 8 stk som hadde meldt seg på valgte å ikke løpe av diverse dårlige
-              grunner. Igjen vil jeg henge ut Adam, da han for andre år på rad ikke stiller til start på grunn av alkoholrelaterte årsaker.
-            </p>
-            <p>
-              Det var likevel 14 legender som fullførte dette året. Uheldighvis var vår regjerende mester Lasse ikke en av dem. Hele 6 deltakere
-              løp under <strong>12:00</strong>. Adams startet hardt sammen med Karl Magnus, bak i feltet var vi lite bekymret for den
-              skadeutsatte fotballspilleren. Adams falt av etter en drøy kilometer og forsvant bak i feltet. Endte til slutt på 7.plass
-              (<strong>12:27</strong>), respektabel tid, men kunne vært bedre med en mer konservativ åpning. Karl Magnus derimot var ikke mulig
-              å hente inn. Han jogget inn til en ny stevnerekord og seier med tiden <strong>10:46</strong>. Man kan bare spekulere hvordan
-              dette ville utartet seg dersom Lasse var på startstreken. For andre år på rad knuser Erik Håkon i en sluttspurt. De to
-              populerte resten av pallen med tidene <strong>11:20</strong> og <strong>11:22</strong>, Dennis, Njål og Runar presterte alle
-              med sterke tider i sin debut <strong>11:31</strong>, <strong>11:35</strong> og <strong>11:37</strong> holdt til 4., 5. og 6.plass.
-              Sondre klarte å forbedre tiden sin fra i fjor med 10 sekunder (<strong>12:47</strong>), men er fortsatt langt under sitt potensial.
-              Eskild fortsetter å prestere dårligere, <strong>13:37</strong> i år 36, sekunder saktere enn i fjor. Bakerst kom Marius med Elin i
-              barnevogn på tiden <strong>14:40</strong>, 10 sekunder raskere enn tregeste person (Jens) året før. Kanskje Jens - Marius duellen
-              kan materialiseres i 2025?
-            </p>
-            <p>
-              <strong>
-                1.plass: Karl Magnus Torgrimsen 10:46<br>
-                2.plass: Erik Engebretsen 11:20<br>
-                3.plass: Håkon André Halvorsen 11:22
-              </strong>
-            </p>
-          </div>
-        </div>
-      </section>
+    <div class="container">
+      <main></main>
+    </div>
 
-      <!-- 2023 -->
-      <section class="history-entry yellowBackground">
-        <h2>2023</h2>
-        <div class="entry-content">
-          <div class="entry-image">
-            <img src="photos/legendelopet_2023.jpg"
-                 onerror="this.src='https://placehold.co/300x200/d8a700/333333?text=2023+L%C3%B8p'"
-                 alt="Bilde fra Legendeløpet 2023" />
-            <p>2023: Regjerende mester beholder pokalen</p>
-          </div>
-          <div class="entry-text">
-            <h3>Kampen mot elementene</h3>
-            <p>
-              Året 2023 ble preget av utfordrende værforhold. Et tynt snødekke gjorde løypen litt glatt. Invitasjonen var utvidet,
-              og det var flere legender som møtte opp. Verdt å notere at Adam ikke møtte fordi han var bakfull og/eller full. Lasse
-              var fortsatt den store favoritten, men debutanten Karl Magnus kunne gi han en utfordring. Også Jens må trekkes frem, ikke som en utfordrer men som stiller opp, tross dårlig forhold og
-              ingen mulighet eller ønske om å prestere i toppen.
-            </p>
-            <p>
-              Undertegnede sine minner fra dette løpet er vage. Lasse og Karl Magnus dro av gårde i et tempo resten bare kan drømme om.
-              Tydeligvis har Lasse dratt i fra og fått en astronomisk ledelse på 32 sekunder på andreplassen. Erik lå alene siste kilometeren
-              og Håkon ga alt for å ta han igjen, men hadde ikke sjans i en sluttspurt.
-            </p>
-            <p>
-              Året var preget av dårlige prestasjoner fra flere utøvere. Erik 12 sekunder saktere, Sondre 55 sekunder saktere og Eskild 39 sekunder
-              saktere.
-            </p>
-            <p>
-              Hicham på en 5.plass med tiden: <strong>12:17</strong> og Jens med tiden: <strong>14:50</strong> imponerte. Hicham fordi han var
-              raskere enn forventet og Jens fordi han møtte opp tidsnok.
-            </p>
-            <p>
-              <strong>
-                1.plass: Lasse Berg Johnsen 11:04<br>
-                2.plass: Karl Magnus Torgrimsen 11:36<br>
-                3.plass: Erik Engebretsen 12:05
-              </strong>
-            </p>
-          </div>
-        </div>
-      </section>
+    <div id="footer">
+      <footer>Legendeløpet</footer>
+    </div>
 
-      <!-- 2022 -->
-      <section class="history-entry greenBackground">
-        <h2>2022</h2>
-        <div class="entry-content">
-          <div class="entry-image">
-            <img src="photos/legendelopet_2022.jpg"
-                 onerror="this.src='https://placehold.co/300x200/008080/ffffff?text=2022+Start'"
-                 alt="Bilde fra Legendeløpet 2022" />
-            <p>De 7 deltakerne i det første "offisielle" løpet</p>
-          </div>
-          <div class="entry-text">
-            <h3>Starten på en tradisjon</h3>
-            <p>
-              Ryktene om et vennskapelig oppgjør rundt Mosvatnet hadde nådd undertegnede og jeg ønsket å delta. Det utviklet seg til at jeg "kapret"
-              løpet, ga det et kleint navn og inviterte noen legender.
-            </p>
-            <p>
-              Da startskuddet gikk var det Johannes, toppidrettsutøver på håndballbanen og deltids-actionfigur som tok ledelsen i noe som må ha vært 3:30 tempo.
-              Lasse, Sondre og Erik hang seg nervøst på. Adam la seg kontrollert bakerst i kjent Ingebritsen-stil, mens Håkon hang seg på tempoet til Eskild.
-            </p>
-            <p>
-              Etter rundt 1km begynte Johannes å falle bakover. Han hadde nok ikke lest løypebeskrivelsen og startet alt for hardt. Lasse tok da ledelsen som han
-              aldri ga fra seg. Avstanden ned til Erik ble stadig større og Lasse løp inn til en kontrollert seier. Erik kjempet mot Sondre frem til siste kilometer
-              hvor Sondre til slutt måtte godta en tredjeplass 9 sekunder bak andreplassen.
-            </p>
-            <p>
-              Resten av gjengen kom på løpende bånd. Adam hadde åpnet rolig og plukket sjeler underveis. Han tok en overbevisende 4.plass. I kampen mellom Eskild og
-              Håkon var det Eskild, den tidligere orienteringsløperen med sine vakre lange steg, som kom seirende ut. Johannes møtte veggen, men kjempet seg inn til en
-              respektabel tid på <strong>12:34</strong> (4:11/km)
-            </p>
-            <p>
-              <strong>
-                1.plass: Lasse Berg Johnsen 11:13<br>
-                2.plass: Erik Engebretsen 11:53<br>
-                3.plass: Sondre Benjaminsen 12:02
-              </strong>
-            </p>
-          </div>
-        </div>
-      </section>
+    <!-- LIGHTBOX markup -->
+    <div class="lightbox-backdrop" id="lightbox" aria-hidden="true">
+      <img class="lightbox-content" id="lightbox-img" alt="Forstørret bilde" />
+    </div>
 
-      <!-- Før 2022 -->
-      <section class="history-entry redBackground">
-        <h2>2018 - 2021</h2>
-        <div class="entry-content">
-          <div class="entry-imageVertical">
-            <img src="photos/sondre_legendelopet.jpg"
-                 onerror="this.src='https://placehold.co/300x200/555555/ffffff?text=F%C3%B8r+2022'"
-                 alt="Bilde fra tiden før 2022" />
-            <p>Bevis på tidligere prestasjoner.</p>
-          </div>
-          <div class="entry-text">
-            <h3>Røttene</h3>
-            <p>
-              Fra denne tiden finnes det bare rykter, spekulasjoner og noen kornete screenshots fra Strava-aktiviteter. Legenden sier at Lasse og Sondre startet det
-              hele rundt <strong>2018</strong>. Hvert år var det en duell, en kamp om hvem som var best. Lasse som holdt seg i form mens han fulgte guttedrømmen om å bli
-              fotballproff og Sondre som stilte opp dag inn, dag ut på banen i Bournemouth, UK for å dunke ut 4x4-intervaller.
-            </p>
-            <p>
-              År etter år møtte Sondre opp på startstreken ved kapellet på Mosvatnet. År etter år ble han knust av Lasse som aldri tok seg helt ut. Det hele kulminerte i
-              <strong>2020</strong> da Sondre løp inn til en imponerende tid på <strong>10:36</strong> (03:32/km), men fortsatt slått av talentet fra FGI som lekte seg inn
-              til tiden <strong>10:30</strong> (03:30/km). Selv om disse tidene ikke er inkludert på våre offisielle resultatlister, fortjener Lasse og Sondre respekt for
-              prestasjonene og for å plante frøene som har spiret og grodd til dagens Legendeløp.
-            </p>
-            <p>Året <strong>2021</strong> vet vi ikke om løpet ble arrangert.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- LIGHTBOX markup -->
-  <div class="lightbox-backdrop" id="lightbox" aria-hidden="true">
-    <img class="lightbox-content" id="lightbox-img" alt="Forstørret bilde" />
-  </div>
-
-  <script>
-    // Nedtelling for Legendeløpet 2025
-    (function countdownInit(){
-      const targetDate = new Date("2025-12-20T10:30:00");
-      const timerElement = document.getElementById("timer");
-      function tick() {
-        const now = new Date();
-        const diff = targetDate - now;
-        if (diff <= 0) {
-          timerElement.textContent = "Løpet har startet!";
-          return;
+    <script>
+      // Nedtelling for Legendeløpet 2025
+      (function countdownInit() {
+        const targetDate = new Date("2025-12-20T10:30:00");
+        const timerElement = document.getElementById("timer");
+        function tick() {
+          const now = new Date();
+          const diff = targetDate - now;
+          if (diff <= 0) {
+            timerElement.textContent = "Løpet har startet!";
+            return;
+          }
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((diff / (1000 * 60)) % 60);
+          const seconds = Math.floor((diff / 1000) % 60);
+          timerElement.textContent = `${days} dager ${hours}t ${minutes}m ${seconds}s`;
         }
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-        timerElement.textContent = `${days} dager ${hours}t ${minutes}m ${seconds}s`;
-      }
-      tick();
-      setInterval(tick, 1000);
-    })();
+        tick();
+        setInterval(tick, 1000);
+      })();
 
-    // Lightweight Lightbox: applies to ALL images
-    (function lightboxInit(){
-      const lb = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightbox-img');
+      // Lightweight Lightbox: applies to ALL images
+      (function lightboxInit() {
+        const lb = document.getElementById("lightbox");
+        const lbImg = document.getElementById("lightbox-img");
 
-      function openLightbox(src, alt) {
-        lbImg.src = src;
-        lbImg.alt = alt || 'Forstørret bilde';
-        lb.classList.add('is-open');
-        lb.setAttribute('aria-hidden', 'false');
-        document.documentElement.style.overflow = 'hidden'; // Prevent background scroll
-      }
-
-      function closeLightbox() {
-        lb.classList.remove('is-open');
-        lb.setAttribute('aria-hidden', 'true');
-        lbImg.removeAttribute('src');
-        document.documentElement.style.overflow = '';
-      }
-
-      // Click ANYWHERE to close
-      lb.addEventListener('click', closeLightbox);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
-      });
-
-      // Delegate clicks to all <img>
-      document.addEventListener('click', (e) => {
-        const t = e.target;
-        if (t && t.tagName === 'IMG' && !lb.contains(t)) {
-          // If image has srcset/sizes, prefer currentSrc
-          const src = t.currentSrc || t.src;
-          openLightbox(src, t.alt || '');
+        function openLightbox(src, alt) {
+          lbImg.src = src;
+          lbImg.alt = alt || "Forstørret bilde";
+          lb.classList.add("is-open");
+          lb.setAttribute("aria-hidden", "false");
+          document.documentElement.style.overflow = "hidden"; // Prevent background scroll
         }
-      }, true);
-    })();
-  </script>
-</body>
+
+        function closeLightbox() {
+          lb.classList.remove("is-open");
+          lb.setAttribute("aria-hidden", "true");
+          lbImg.removeAttribute("src");
+          document.documentElement.style.overflow = "";
+        }
+
+        // Click ANYWHERE to close
+        lb.addEventListener("click", closeLightbox);
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeLightbox();
+        });
+
+        // Delegate clicks to all <img>
+        document.addEventListener(
+          "click",
+          (e) => {
+            const t = e.target;
+            if (t && t.tagName === "IMG" && !lb.contains(t)) {
+              // If image has srcset/sizes, prefer currentSrc
+              const src = t.currentSrc || t.src;
+              openLightbox(src, t.alt || "");
+            }
+          },
+          true,
+        );
+      })();
+    </script>
+  </body>
 </html>
-
-

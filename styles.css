@@ -20,7 +20,6 @@ body {
   margin: 0;
   font-family: "Lato", sans-serif;
   background: #f9f9f9;
-  color: #333;
   line-height: 1.5;
 }
 
@@ -135,14 +134,9 @@ main {
 .history-entry {
   padding: clamp(1.5rem, 2vw, 3rem) clamp(1rem, 2vw, 2rem);
   margin-bottom: 2rem;
-  /* border-radius: 12px; */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  /* transition: transform 0.25s ease-in-out; */
   background: #fff;
 }
-/* .history-entry:hover {
-  transform: translateY(-3px);
-} */
 
 .history-entry h2 {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
@@ -154,9 +148,8 @@ main {
 
 /* Box color themes */
 .redBackground {
-  background-color: #ffccb;
+  background-color: #ffc;
   border: 1px solid #dc3545;
-  opacity: 0.6;
 }
 .redBackground h2 {
   border-color: #dc3545;
@@ -290,4 +283,24 @@ main {
     width: 100%;
     text-align: center;
   }
+}
+
+#footer {
+  background-color: #c5c5c5;
+  border-top: 1px solid #d8a700;
+  display: flex;
+  justify-content: center;
+}
+
+.previous-races-overskrift {
+  font-size: larger;
+  padding: 2rem;
+  margin: 2rem 0;
+  background-color: #ffdb58;
+  border: 1px solid #d8a700;
+  color: #050505;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
