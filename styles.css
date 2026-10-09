@@ -1,5 +1,5 @@
 :root {
-  --ink: #1d1d1b;
+  --ink: #000;
   --muted: #5c5c57;
   --line: #dcdad2;
   --soft: #f3f3f1;
@@ -17,11 +17,11 @@ html {
 body {
   margin: 0;
   font:
-    1.05rem/1.65 "Lato",
-    system-ui,
-    sans-serif;
+    1.05rem/1.65 'Courier New', Courier, monospace;
   color: var(--ink);
   background: #fff;
+  font-weight: 400;
+
 }
 img {
   max-width: 100%;
@@ -58,6 +58,8 @@ p {
   max-width: var(--wide);
   margin: 0 auto;
   padding: 0 1.25rem;
+}
+
 }
 .section {
   padding: 3rem 0;
