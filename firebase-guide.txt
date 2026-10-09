@@ -1,0 +1,78 @@
+LEGENDELØPET – LEGG TIL NYE RESULTATER I FIREBASE
+==================================================
+
+Etter løpet i 2026 (og hvert år etter det) gjør du dette.
+Nettsiden henter alt fra Firestore, så ingen kode må endres for å vise nye resultater.
+
+1) ÅPNE DATABASEN
+   - Gå til https://console.firebase.google.com og logg inn.
+   - Velg prosjektet "legendelopet-resultat".
+   - Menyen til venstre: Build -> Firestore Database -> fanen "Data".
+   - Åpne samlingen (collection) "results".
+
+2) LEGG TIL EN LØPER (ett dokument per løper per år)
+   - Trykk "Add document".
+   - Document ID: trykk "Auto-ID".
+   - Legg inn disse 4 feltene:
+
+       Felt           Type      Eksempel
+       -------------  --------  ----------------------
+       name           string    Karl Magnus Torgrimsen
+       athlete_id     string    karl-magnus-torgrimsen
+       year           number    2026
+       time_display   string    10:36
+
+   - Trykk "Save". Gjenta for hver løper.
+
+   Tips: Kopier et eksisterende dokument ("Add document" fra en eksisterende rad,
+   eller tre-prikk-menyen -> "Clone document") og endre bare year og time_display.
+
+3) REGLER SOM MÅ FØLGES (ellers blir tabellen feil)
+   - year skal være NUMBER (2026), ikke string ("2026").
+   - time_display skal være string på formatet M:SS eller MM:SS, med kolon. Eksempel: 11:04
+   - athlete_id må være NØYAKTIG lik hvert år for samme person.
+     Det er den som kobler løperen sammen, slik at klikk på navn viser alle
+     løpene hans/hennes og grafen. Bruk små bokstaver og bindestrek.
+     Se på tidligere dokumenter for å kopiere riktig id.
+   - Nye løpere: lag en ny, unik athlete_id.
+   - Stavemåten i "name" skal være lik hvert år.
+   - Ikke legg inn DNS/DNF. Bare de som fullførte.
+
+4) DU TRENGER IKKE
+   - Plassering (rank), fart (pace), eller "alle tider"-plassering.
+     Dette regnes ut automatisk av siden ut fra tidene.
+   - Å lage nye år-knapper. Knappen "2026" dukker opp av seg selv så snart det
+     finnes minst ett dokument med year = 2026.
+
+5) SJEKK RESULTATET
+   - Åpne results.html (husk å laste siden på nytt med Ctrl+Shift+R / Cmd+Shift+R).
+   - Sjekk at året ligger riktig i fanene, og at klikk på et navn viser grafen.
+   - Mangler en løper? Se i nettleserens konsoll (F12) etter feilmeldinger.
+     Dokumenter uten time_display eller year hoppes over.
+
+6) OPPDATER FORSIDEN FOR NESTE ÅR (manuelt i index.html og script.js)
+   - script.js: endre datoen i  new Date("2026-12-19T11:00:00")  til neste løp.
+   - index.html: oppdater dato, klokkeslett, "Legendeløpet 2026"-teksten
+     og tittelen i <title>.
+   - Flytt "Regjerende mester" til ny vinner, og legg inn en ny <article class="entry">
+     øverst under "Tidligere løp" (kopier en eksisterende).
+
+7) SIKKERHET (gjør dette én gang)
+   Firebase-nøkkelen i results.js er offentlig – det er normalt. Det som beskytter
+   databasen er Firestore Rules. Under Firestore -> Rules bør det stå:
+
+       rules_version = '2';
+       service cloud.firestore {
+         match /databases/{database}/documents {
+           match /results/{doc} {
+             allow read: if true;
+             allow write: if false;
+           }
+         }
+       }
+
+   Da kan alle lese, men bare du (via konsollen) kan endre data.
+
+8) MANGE RESULTATER PÅ EN GANG (valgfritt)
+   Det er raskest å legge inn for hånd når det er ~15 løpere. Skal du importere en CSV,
+   si ifra så lager jeg et lite importskript.
