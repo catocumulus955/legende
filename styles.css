@@ -17,11 +17,11 @@ html {
 body {
   margin: 0;
   font:
-    1.05rem/1.65 'Courier New', Courier, monospace;
+    1.05rem/1.65 "Lato",
+    sans-serif;
   color: var(--ink);
   background: #fff;
   font-weight: 400;
-
 }
 img {
   max-width: 100%;
@@ -60,7 +60,6 @@ p {
   padding: 0 1.25rem;
 }
 
-}
 .section {
   padding: 3rem 0;
   border-top: 1px solid var(--line);
@@ -84,7 +83,7 @@ p {
   font-weight: 800;
   font-size: 1.2rem;
   text-decoration: none;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Source Code Pro", monospace;
 }
 .nav {
   display: flex;
@@ -191,6 +190,7 @@ p {
   font-size: clamp(2.6rem, 8vw, 4.5rem);
   font-weight: 800;
   margin-bottom: 0.25rem;
+  font-family: "Source Code Pro", monospace;
 }
 .tagline {
   font-size: 1.2rem;
