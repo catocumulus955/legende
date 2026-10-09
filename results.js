@@ -18,7 +18,7 @@ const fmt = (sec) => {
   const r = Math.round(sec);
   return `${Math.floor(r / 60)}:${String(r % 60).padStart(2, "0")}`;
 };
-const pace = (t) => fmt(toSec(t) / 3.2); // løypa er 3 km
+const pace = (t) => fmt(toSec(t) / 3.02); // løypa er 3 km
 
 let results = [];
 let chart;
